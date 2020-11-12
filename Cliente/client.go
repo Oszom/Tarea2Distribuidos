@@ -1,9 +1,8 @@
 package main
 
 import (
-	logistica "Tarea1/Logistica/logistica"
+	//ElRoedor "Tarea2/Cliente/PicadorCriminalMutilador" //Nombre del paquete que posee las funciones de generar chunks y unirlos
 	"bufio"
-
 	//"encoding/csv"
 	"fmt"
 
