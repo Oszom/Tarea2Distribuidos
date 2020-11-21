@@ -1,0 +1,22 @@
+syntax = "proto3";
+package namenode;
+option go_package = "NameNode/namenode";
+
+
+/*
+    DireccionServer retorna informacion del
+    nuevo 
+*/
+message PuertoAConectar{
+    string puerto = 1;
+}
+
+message EmptyMessage {}
+
+service SpreaderService {
+    rpc redirigirCliente(EmptyMessage) returns (PuertoAConectar) {}
+}
+
+service NameNodeService {
+    rpc pruebaFuncionalidad(EmptyMessage) returns (EmptyMessage) {}
+}

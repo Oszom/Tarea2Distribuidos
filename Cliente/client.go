@@ -1,20 +1,10 @@
 package main
 
-import (
-	//ElRoedor "Tarea2/Cliente/PicadorCriminalMutilador" //Nombre del paquete que posee las funciones de generar chunks y unirlos
-	"bufio"
-	//"encoding/csv"
-	"fmt"
+//Nombre del paquete que posee las funciones de generar chunks y unirlos
 
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
+//"io"
 
-	//"io"
-	"log"
-	"os"
-	"strconv"
-	"strings"
-)
+/*
 
 func main() {
 
@@ -141,5 +131,11 @@ func main() {
 		}
 
 	}
+
+}
+
+*/
+
+func main() {
 
 }
