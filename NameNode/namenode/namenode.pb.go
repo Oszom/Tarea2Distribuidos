@@ -112,6 +112,53 @@ func (*EmptyMessage) Descriptor() ([]byte, []int) {
 	return file_namenode_proto_rawDescGZIP(), []int{1}
 }
 
+type Saludines struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Msg string `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+}
+
+func (x *Saludines) Reset() {
+	*x = Saludines{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_namenode_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Saludines) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Saludines) ProtoMessage() {}
+
+func (x *Saludines) ProtoReflect() protoreflect.Message {
+	mi := &file_namenode_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Saludines.ProtoReflect.Descriptor instead.
+func (*Saludines) Descriptor() ([]byte, []int) {
+	return file_namenode_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Saludines) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
 var File_namenode_proto protoreflect.FileDescriptor
 
 var file_namenode_proto_rawDesc = []byte{
@@ -120,13 +167,19 @@ var file_namenode_proto_rawDesc = []byte{
 	0x65, 0x72, 0x74, 0x6f, 0x41, 0x43, 0x6f, 0x6e, 0x65, 0x63, 0x74, 0x61, 0x72, 0x12, 0x16, 0x0a,
 	0x06, 0x70, 0x75, 0x65, 0x72, 0x74, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70,
 	0x75, 0x65, 0x72, 0x74, 0x6f, 0x22, 0x0e, 0x0a, 0x0c, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x4d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x32, 0x5a, 0x0a, 0x0f, 0x53, 0x70, 0x72, 0x65, 0x61, 0x64, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x1d, 0x0a, 0x09, 0x53, 0x61, 0x6c, 0x75, 0x64, 0x69, 0x6e,
+	0x65, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x6d, 0x73, 0x67, 0x32, 0x9a, 0x01, 0x0a, 0x0f, 0x53, 0x70, 0x72, 0x65, 0x61, 0x64, 0x65,
 	0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x47, 0x0a, 0x10, 0x72, 0x65, 0x64, 0x69,
 	0x72, 0x69, 0x67, 0x69, 0x72, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x65, 0x12, 0x16, 0x2e, 0x6e,
 	0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x4d, 0x65, 0x73,
 	0x73, 0x61, 0x67, 0x65, 0x1a, 0x19, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e,
 	0x50, 0x75, 0x65, 0x72, 0x74, 0x6f, 0x41, 0x43, 0x6f, 0x6e, 0x65, 0x63, 0x74, 0x61, 0x72, 0x22,
-	0x00, 0x32, 0x5a, 0x0a, 0x0f, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x65, 0x72,
+	0x00, 0x12, 0x3e, 0x0a, 0x0c, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78,
+	0x74, 0x12, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x53, 0x61, 0x6c,
+	0x75, 0x64, 0x69, 0x6e, 0x65, 0x73, 0x1a, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64,
+	0x65, 0x2e, 0x53, 0x61, 0x6c, 0x75, 0x64, 0x69, 0x6e, 0x65, 0x73, 0x22, 0x00, 0x28, 0x01, 0x30,
+	0x01, 0x32, 0x5a, 0x0a, 0x0f, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x65, 0x72,
 	0x76, 0x69, 0x63, 0x65, 0x12, 0x47, 0x0a, 0x13, 0x70, 0x72, 0x75, 0x65, 0x62, 0x61, 0x46, 0x75,
 	0x6e, 0x63, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x64, 0x12, 0x16, 0x2e, 0x6e, 0x61,
 	0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x4d, 0x65, 0x73, 0x73,
@@ -148,18 +201,21 @@ func file_namenode_proto_rawDescGZIP() []byte {
 	return file_namenode_proto_rawDescData
 }
 
-var file_namenode_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_namenode_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_namenode_proto_goTypes = []interface{}{
 	(*PuertoAConectar)(nil), // 0: namenode.PuertoAConectar
 	(*EmptyMessage)(nil),    // 1: namenode.EmptyMessage
+	(*Saludines)(nil),       // 2: namenode.Saludines
 }
 var file_namenode_proto_depIdxs = []int32{
 	1, // 0: namenode.SpreaderService.redirigirCliente:input_type -> namenode.EmptyMessage
-	1, // 1: namenode.NameNodeService.pruebaFuncionalidad:input_type -> namenode.EmptyMessage
-	0, // 2: namenode.SpreaderService.redirigirCliente:output_type -> namenode.PuertoAConectar
-	1, // 3: namenode.NameNodeService.pruebaFuncionalidad:output_type -> namenode.EmptyMessage
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	2, // 1: namenode.SpreaderService.printContext:input_type -> namenode.Saludines
+	1, // 2: namenode.NameNodeService.pruebaFuncionalidad:input_type -> namenode.EmptyMessage
+	0, // 3: namenode.SpreaderService.redirigirCliente:output_type -> namenode.PuertoAConectar
+	2, // 4: namenode.SpreaderService.printContext:output_type -> namenode.Saludines
+	1, // 5: namenode.NameNodeService.pruebaFuncionalidad:output_type -> namenode.EmptyMessage
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -195,6 +251,18 @@ func file_namenode_proto_init() {
 				return nil
 			}
 		}
+		file_namenode_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Saludines); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -202,7 +270,7 @@ func file_namenode_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_namenode_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   2,
 		},
@@ -229,6 +297,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type SpreaderServiceClient interface {
 	RedirigirCliente(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*PuertoAConectar, error)
+	PrintContext(ctx context.Context, opts ...grpc.CallOption) (SpreaderService_PrintContextClient, error)
 }
 
 type spreaderServiceClient struct {
@@ -248,9 +317,41 @@ func (c *spreaderServiceClient) RedirigirCliente(ctx context.Context, in *EmptyM
 	return out, nil
 }
 
+func (c *spreaderServiceClient) PrintContext(ctx context.Context, opts ...grpc.CallOption) (SpreaderService_PrintContextClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_SpreaderService_serviceDesc.Streams[0], "/namenode.SpreaderService/printContext", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &spreaderServicePrintContextClient{stream}
+	return x, nil
+}
+
+type SpreaderService_PrintContextClient interface {
+	Send(*Saludines) error
+	Recv() (*Saludines, error)
+	grpc.ClientStream
+}
+
+type spreaderServicePrintContextClient struct {
+	grpc.ClientStream
+}
+
+func (x *spreaderServicePrintContextClient) Send(m *Saludines) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *spreaderServicePrintContextClient) Recv() (*Saludines, error) {
+	m := new(Saludines)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // SpreaderServiceServer is the server API for SpreaderService service.
 type SpreaderServiceServer interface {
 	RedirigirCliente(context.Context, *EmptyMessage) (*PuertoAConectar, error)
+	PrintContext(SpreaderService_PrintContextServer) error
 }
 
 // UnimplementedSpreaderServiceServer can be embedded to have forward compatible implementations.
@@ -259,6 +360,9 @@ type UnimplementedSpreaderServiceServer struct {
 
 func (*UnimplementedSpreaderServiceServer) RedirigirCliente(context.Context, *EmptyMessage) (*PuertoAConectar, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RedirigirCliente not implemented")
+}
+func (*UnimplementedSpreaderServiceServer) PrintContext(SpreaderService_PrintContextServer) error {
+	return status.Errorf(codes.Unimplemented, "method PrintContext not implemented")
 }
 
 func RegisterSpreaderServiceServer(s *grpc.Server, srv SpreaderServiceServer) {
@@ -283,6 +387,32 @@ func _SpreaderService_RedirigirCliente_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SpreaderService_PrintContext_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SpreaderServiceServer).PrintContext(&spreaderServicePrintContextServer{stream})
+}
+
+type SpreaderService_PrintContextServer interface {
+	Send(*Saludines) error
+	Recv() (*Saludines, error)
+	grpc.ServerStream
+}
+
+type spreaderServicePrintContextServer struct {
+	grpc.ServerStream
+}
+
+func (x *spreaderServicePrintContextServer) Send(m *Saludines) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *spreaderServicePrintContextServer) Recv() (*Saludines, error) {
+	m := new(Saludines)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _SpreaderService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "namenode.SpreaderService",
 	HandlerType: (*SpreaderServiceServer)(nil),
@@ -292,7 +422,14 @@ var _SpreaderService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _SpreaderService_RedirigirCliente_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "printContext",
+			Handler:       _SpreaderService_PrintContext_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "namenode.proto",
 }
 

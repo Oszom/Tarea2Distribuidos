@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func juntar(nombreArchivo string, cantPartes uint64) {
+func Juntar(nombreArchivo string, cantPartes uint64) {
 
 	// just for fun, let's recombine back the chunked files in a new file
 
@@ -109,7 +109,7 @@ func juntar(nombreArchivo string, cantPartes uint64) {
 
 }
 
-func cortar(archivo string) {
+func Cortar(archivo string) {
 
 	fileToBeChunked := "cosa.pdf" // change here!
 

@@ -1,13 +1,13 @@
 package main
 
 import (
-
 	"Tarea2/NameNode/namenode"
 
 	//"bufio"
 	//"fmt"
 	"log"
 	"net"
+
 	//"os"
 	//"strings"
 	"sync"
@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func GetOutboundIP() net.IP {
+func getOutboundIP() net.IP {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
 		log.Fatal(err)
@@ -27,32 +27,31 @@ func GetOutboundIP() net.IP {
 	return localAddr.IP
 }
 
-func servirServidor(wg *sync.WaitGroup, namenodeServer  *namenode.ServerNamenode, puerto string) {
+func servirServidor(wg *sync.WaitGroup, namenodeServer *namenode.ServerRepartidor, puerto string) {
 	lis, err := net.Listen("tcp", ":"+puerto)
 	if err != nil {
 		log.Fatalf("Failed to listen on port %s: %v", puerto, err)
 	}
 	grpcServer := grpc.NewServer()
 
-	namenode.RegisterNameNodeServiceServer(grpcServer, namenodeServer)
+	namenode.RegisterSpreaderServiceServer(grpcServer, namenodeServer)
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve gRPC server over port %s: %v", puerto, err)
 	}
 }
 
-func main(){
+func main() {
+
 	var wg sync.WaitGroup
 
-	log.Printf("El IP del Namenode actual es: %v", GetOutboundIP())
+	log.Printf("El IP del Namenode actual es: %v", getOutboundIP())
 
 	sr := namenode.ServerRepartidor{}
-	sn := namenode.ServerNamenode{}
+	//sn := namenode.ServerNamenode{}
 
-	portsLibres = []string{"9000","9001","9002","9003"}
-	for i, s := range portsLibres {
-		we.Add(1)
-	} 
+	wg.Add(1)
+	go servirServidor(&wg, &sr, "9000")
+	wg.Wait()
 
-	
 }

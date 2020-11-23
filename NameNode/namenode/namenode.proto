@@ -3,6 +3,7 @@ package namenode;
 option go_package = "NameNode/namenode";
 
 
+
 /*
     DireccionServer retorna informacion del
     nuevo 
@@ -13,8 +14,13 @@ message PuertoAConectar{
 
 message EmptyMessage {}
 
+message Saludines {
+    string msg = 1;
+}
+
 service SpreaderService {
     rpc redirigirCliente(EmptyMessage) returns (PuertoAConectar) {}
+    rpc printContext(stream Saludines) returns (stream Saludines) {}
 }
 
 service NameNodeService {
