@@ -1,0 +1,22 @@
+syntax = "proto3";
+package datanode;
+option go_package = "Datanode/datanode";
+
+message Chunk {
+    bytes Content = 1;
+}
+
+enum UploadStatusCode {
+    Desconocido = 0;
+    Ok = 1;
+    Fallido = 2;
+}
+
+message UploadStatus{
+    string Message = 1;
+    UploadStatusCode Code = 2;
+}
+
+service DatanodeService{
+    rpc SubirArchivo(stream Chunk) returns (UploadStatus) {}
+}
