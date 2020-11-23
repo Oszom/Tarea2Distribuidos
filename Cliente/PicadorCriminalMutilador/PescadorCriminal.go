@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+//Juntar is
 func Juntar(nombreArchivo string, cantPartes uint64) {
 
 	// just for fun, let's recombine back the chunked files in a new file
@@ -109,10 +110,11 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 
 }
 
-func Cortar(archivo string) {
+//Cortar is
+func Cortar(archivo string) []string {
 
-	fileToBeChunked := "cosa.pdf" // change here!
-
+	fileToBeChunked := archivo // change here!
+	var partes []string
 	file, err := os.Open(fileToBeChunked)
 
 	if err != nil {
@@ -143,6 +145,7 @@ func Cortar(archivo string) {
 
 		// write to disk
 		fileName := fileInfo.Name() + "_parte_" + strconv.FormatUint(i, 10)
+		partes = append(partes, fileName)
 		_, err := os.Create(fileName)
 
 		if err != nil {
@@ -155,7 +158,7 @@ func Cortar(archivo string) {
 
 		fmt.Println("Split to : ", fileName)
 	}
-
+	return partes
 	// just for fun, let's recombine back the chunked files in a new file
 
 }

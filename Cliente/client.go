@@ -1,16 +1,16 @@
 package main
 
 import (
-	"context"
-	"log"
+	Roedor "Tarea2/Cliente/PicadorCriminalMutilador"
+	//"Tarea2/NameNode/namenode"
 	"bufio"
-	"os"
+	//"context"
 	"fmt"
-	"io"
+	//"io"
+	"log"
+	"os"
 	"strings"
-	"time"
-
-	"Tarea2/NameNode/namenode"
+	//"time"
 
 	"google.golang.org/grpc"
 )
@@ -160,56 +160,70 @@ func main() {
 
 	defer conn.Close()
 
-	c := namenode.NewSpreaderServiceClient(conn)
-
-	stream, err := c.PrintContext(context.Background())
-	//log.Printf("%v, %v", response, err)
-
 	readerTipo := bufio.NewReader(os.Stdin)
-	fmt.Printf("1 o 2, que significará, tu lo déscúbrírás: ")
-	tipo, _ := readerTipo.ReadString('\n')
-	tipo = strings.TrimSuffix(tipo, "\n")
-	tipo = strings.TrimSuffix(tipo, "\r")
+	fmt.Printf("Ingrese nombre del archivo: ")
+	file, _ := readerTipo.ReadString('\n')
+	file = strings.TrimSuffix(file, "\n")
+	file = strings.TrimSuffix(file, "\r")
 
-	var ingredientes [6]string
-
-	if tipo == "1"{
-		ingredientes = [6]string{"mayo", "mostaza", "palta", "tomate", "miel", "aji"}
-	} else {
-		ingredientes = [6]string{"azucar rubia", "extracto de vainilla", "manjar", "leche", "crema batida", "chocolate"}
+	partes := Roedor.Cortar(file)
+	for i := 0; i < len(partes); i++ {
+		fmt.Printf(partes[i])
 	}
 
-	waitc := make(chan struct{})
+	/*
+		c := namenode.NewSpreaderServiceClient(conn)
 
-	go func() {
-		for{
-			in, err := stream.Recv()
-			if err == io.EOF {
-				close(waitc)
-				return
-			} 
+		stream, err := c.PrintContext(context.Background())
+		//log.Printf("%v, %v", response, err)
 
-			if err != nil {
-				log.Fatalf("Error al recibir un mensaje: %v", err)
+		readerTipo := bufio.NewReader(os.Stdin)
+		fmt.Printf("1 o 2, que significará, tu lo déscúbrírás: ")
+		tipo, _ := readerTipo.ReadString('\n')
+		tipo = strings.TrimSuffix(tipo, "\n")
+		tipo = strings.TrimSuffix(tipo, "\r")
+
+		var ingredientes [6]string
+
+		if tipo == "1"{
+			ingredientes = [6]string{"mayo", "mostaza", "palta", "tomate", "miel", "aji"}
+		} else {
+			ingredientes = [6]string{"azucar rubia", "extracto de vainilla", "manjar", "leche", "crema batida", "chocolate"}
+		}
+
+
+
+		waitc := make(chan struct{})
+
+		go func() {
+			for{
+				in, err := stream.Recv()
+				if err == io.EOF {
+					close(waitc)
+					return
+				}
+
+				if err != nil {
+					log.Fatalf("Error al recibir un mensaje: %v", err)
+				}
+				log.Printf("El server retorna el siguiente mensaje: %v", in.Msg)
 			}
-			log.Printf("El server retorna el siguiente mensaje: %v", in.Msg)
+		} ()
+
+		var mensaje namenode.Saludines
+
+		for _, note := range ingredientes {
+
+			mensaje = namenode.Saludines{Msg: "El pablo se la come con " + note}
+
+			if err := stream.Send(&mensaje); err != nil {
+				log.Fatalf("Failed to send a note: %v", err)
+			}
+
+			time.Sleep(1 * time.Second)
 		}
-	} ()
 
-	var mensaje namenode.Saludines
-
-	for _, note := range ingredientes {
-
-		mensaje = namenode.Saludines{Msg: "El pablo se la come con " + note}
-		
-		if err := stream.Send(&mensaje); err != nil {
-			log.Fatalf("Failed to send a note: %v", err)
-		}
-
-		time.Sleep(1 * time.Second)
-	}
-
-	stream.CloseSend()
-	<-waitc
-
+		stream.CloseSend()
+		<-waitc
+	*/
 }
