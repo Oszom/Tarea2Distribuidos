@@ -1,7 +1,6 @@
 package datanode
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -29,7 +28,6 @@ func (dn *DatanodeServer) SubirArchivo(stream DatanodeService_SubirArchivoServer
 
 		if _, err12 := os.Stat("/libro"); os.IsNotExist(err12) {
 			errFolder := os.Mkdir("libro", 0755)
-			fmt.Printf("El andres se la come -> ")
 			if errFolder != nil {
 				//log.Printf(err)
 			}
@@ -42,7 +40,7 @@ func (dn *DatanodeServer) SubirArchivo(stream DatanodeService_SubirArchivoServer
 		/*
 			Hago algo con lo que recibo con in
 		*/
-		log.Printf("%s", in.NombreChunk)
+		log.Printf("Chunk %s recibido con exito.", in.NombreChunk)
 
 		//Se envia la respuesta
 		if err := stream.Send(&UploadStatus{
