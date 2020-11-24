@@ -18,10 +18,6 @@ runDatanode:
 compileDatanode:
 	protoc -I DataNode/datanode DataNode/datanode/datanode.proto --go_out=plugins=grpc:./
 	
-.PHONY: compileDatanodeWin
-compileDatanode:
-	protoc -I DataNode\datanode DataNode\datanode\datanode.proto --go_out=plugins=grpc:.\
-
 #··················································································································
 #················································Cliente···························································
 .PHONY: runCliente

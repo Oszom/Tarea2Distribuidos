@@ -206,11 +206,11 @@ func main() {
 			Parte:          int32(i),
 		}
 
-		fmt.Printf(partes[i])
-
 		if err := stream.Send(&mensaje); err != nil {
 			log.Fatalf("Failed to send a note: %v", err)
 		}
+
+		os.Remove(partes[i])
 
 		time.Sleep(1 * time.Second)
 	}
