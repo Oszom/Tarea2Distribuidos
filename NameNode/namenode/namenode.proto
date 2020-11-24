@@ -8,21 +8,15 @@ option go_package = "NameNode/namenode";
     DireccionServer retorna informacion del
     nuevo 
 */
-message PuertoAConectar{
-    string puerto = 1;
-}
-
 message EmptyMessage {}
 
-message Saludines {
-    string msg = 1;
-}
 
-service SpreaderService {
-    rpc redirigirCliente(EmptyMessage) returns (PuertoAConectar) {}
-    rpc printContext(stream Saludines) returns (stream Saludines) {}
+message Propuesta {
+    string NumChunk = 1;
+    string Maquina = 2;
 }
 
 service NameNodeService {
-    rpc pruebaFuncionalidad(EmptyMessage) returns (EmptyMessage) {}
+    rpc mandarPropuesta(stream Propuesta) returns (stream Propuesta) {}
+
 }

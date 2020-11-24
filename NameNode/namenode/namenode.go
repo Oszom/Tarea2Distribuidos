@@ -7,38 +7,21 @@ import (
 	"golang.org/x/net/context"
 )
 
+//ServerNamenode is
 type ServerNamenode struct {
 	hola int
 }
 
-func (nm *ServerNamenode) PruebaFuncionalidad(ctx context.Context, empty *EmptyMessage) (*EmptyMessage, error) {
-	log.Printf("Esta es una prueba")
-
-	return &EmptyMessage{}, nil
+//IntentoPropuesta is
+type IntentoPropuesta struct {
+	Chunk   string
+	Maquina string
 }
 
-/*
-	Definiciones del servidor encargado de repartir los puertos del namenode
-*/
-
-type ServerRepartidor struct {
-	puertosDisponibles []*string
-	puertosTotales     []*string
-}
-
-func (sr *ServerRepartidor) RedirigirCliente(ctx context.Context, empty *EmptyMessage) (*PuertoAConectar, error) {
-
-	newPort := sr.puertosDisponibles[0]
-	sr.puertosDisponibles = sr.puertosDisponibles[1:]
-
-	return &PuertoAConectar{Puerto: *newPort}, nil
-
-}
-
-func (sr *ServerRepartidor) PrintContext(stream SpreaderService_PrintContextServer) error {
-
-	log.Printf("Hola, veremos como se la come el pablo")
-
+//MandarPropuesta is
+func (sr *ServerNamenode) MandarPropuesta(stream NameNodeService_MandarPropuestaServer) error {
+	var listaPropuesta []IntentoPropuesta
+	var ElementoPropuesta IntentoPropuesta
 	for {
 		in, err := stream.Recv()
 		if err == io.EOF {
@@ -47,10 +30,24 @@ func (sr *ServerRepartidor) PrintContext(stream SpreaderService_PrintContextServ
 		if err != nil {
 			return err
 		}
-		log.Printf("%s", in.Msg)
 
-		if err := stream.Send(in); err != nil {
-			return err
+		ElementoPropuesta = IntentoPropuesta{
+			Chunk:   in.NumChunk,
+			Maquina: in.Maquina,
 		}
+		listaPropuesta = append(listaPropuesta, ElementoPropuesta)
 	}
+
+	//Se envia la respuesta al cliente
+	if err := stream.Send(&UploadStatus{
+		Message: "Chunk recibido",
+		Code:    UploadStatusCode_Ok}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func chequearPropuesta(propuestita []IntentoPropuesta) bool {
+
 }

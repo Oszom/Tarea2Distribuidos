@@ -27,53 +27,6 @@ const (
 //
 //DireccionServer retorna informacion del
 //nuevo
-type PuertoAConectar struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Puerto string `protobuf:"bytes,1,opt,name=puerto,proto3" json:"puerto,omitempty"`
-}
-
-func (x *PuertoAConectar) Reset() {
-	*x = PuertoAConectar{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_namenode_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *PuertoAConectar) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PuertoAConectar) ProtoMessage() {}
-
-func (x *PuertoAConectar) ProtoReflect() protoreflect.Message {
-	mi := &file_namenode_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PuertoAConectar.ProtoReflect.Descriptor instead.
-func (*PuertoAConectar) Descriptor() ([]byte, []int) {
-	return file_namenode_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *PuertoAConectar) GetPuerto() string {
-	if x != nil {
-		return x.Puerto
-	}
-	return ""
-}
-
 type EmptyMessage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -83,7 +36,7 @@ type EmptyMessage struct {
 func (x *EmptyMessage) Reset() {
 	*x = EmptyMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_namenode_proto_msgTypes[1]
+		mi := &file_namenode_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -96,7 +49,7 @@ func (x *EmptyMessage) String() string {
 func (*EmptyMessage) ProtoMessage() {}
 
 func (x *EmptyMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_namenode_proto_msgTypes[1]
+	mi := &file_namenode_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -109,34 +62,35 @@ func (x *EmptyMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EmptyMessage.ProtoReflect.Descriptor instead.
 func (*EmptyMessage) Descriptor() ([]byte, []int) {
-	return file_namenode_proto_rawDescGZIP(), []int{1}
+	return file_namenode_proto_rawDescGZIP(), []int{0}
 }
 
-type Saludines struct {
+type Propuesta struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Msg string `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	NumChunk string `protobuf:"bytes,1,opt,name=NumChunk,proto3" json:"NumChunk,omitempty"`
+	Maquina  string `protobuf:"bytes,2,opt,name=Maquina,proto3" json:"Maquina,omitempty"`
 }
 
-func (x *Saludines) Reset() {
-	*x = Saludines{}
+func (x *Propuesta) Reset() {
+	*x = Propuesta{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_namenode_proto_msgTypes[2]
+		mi := &file_namenode_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *Saludines) String() string {
+func (x *Propuesta) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Saludines) ProtoMessage() {}
+func (*Propuesta) ProtoMessage() {}
 
-func (x *Saludines) ProtoReflect() protoreflect.Message {
-	mi := &file_namenode_proto_msgTypes[2]
+func (x *Propuesta) ProtoReflect() protoreflect.Message {
+	mi := &file_namenode_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -147,14 +101,21 @@ func (x *Saludines) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Saludines.ProtoReflect.Descriptor instead.
-func (*Saludines) Descriptor() ([]byte, []int) {
-	return file_namenode_proto_rawDescGZIP(), []int{2}
+// Deprecated: Use Propuesta.ProtoReflect.Descriptor instead.
+func (*Propuesta) Descriptor() ([]byte, []int) {
+	return file_namenode_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Saludines) GetMsg() string {
+func (x *Propuesta) GetNumChunk() string {
 	if x != nil {
-		return x.Msg
+		return x.NumChunk
+	}
+	return ""
+}
+
+func (x *Propuesta) GetMaquina() string {
+	if x != nil {
+		return x.Maquina
 	}
 	return ""
 }
@@ -163,30 +124,19 @@ var File_namenode_proto protoreflect.FileDescriptor
 
 var file_namenode_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x12, 0x08, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x22, 0x29, 0x0a, 0x0f, 0x50, 0x75,
-	0x65, 0x72, 0x74, 0x6f, 0x41, 0x43, 0x6f, 0x6e, 0x65, 0x63, 0x74, 0x61, 0x72, 0x12, 0x16, 0x0a,
-	0x06, 0x70, 0x75, 0x65, 0x72, 0x74, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70,
-	0x75, 0x65, 0x72, 0x74, 0x6f, 0x22, 0x0e, 0x0a, 0x0c, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x4d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x1d, 0x0a, 0x09, 0x53, 0x61, 0x6c, 0x75, 0x64, 0x69, 0x6e,
-	0x65, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x03, 0x6d, 0x73, 0x67, 0x32, 0x9a, 0x01, 0x0a, 0x0f, 0x53, 0x70, 0x72, 0x65, 0x61, 0x64, 0x65,
-	0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x47, 0x0a, 0x10, 0x72, 0x65, 0x64, 0x69,
-	0x72, 0x69, 0x67, 0x69, 0x72, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x65, 0x12, 0x16, 0x2e, 0x6e,
-	0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x4d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x1a, 0x19, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e,
-	0x50, 0x75, 0x65, 0x72, 0x74, 0x6f, 0x41, 0x43, 0x6f, 0x6e, 0x65, 0x63, 0x74, 0x61, 0x72, 0x22,
-	0x00, 0x12, 0x3e, 0x0a, 0x0c, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78,
-	0x74, 0x12, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x53, 0x61, 0x6c,
-	0x75, 0x64, 0x69, 0x6e, 0x65, 0x73, 0x1a, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64,
-	0x65, 0x2e, 0x53, 0x61, 0x6c, 0x75, 0x64, 0x69, 0x6e, 0x65, 0x73, 0x22, 0x00, 0x28, 0x01, 0x30,
-	0x01, 0x32, 0x5a, 0x0a, 0x0f, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x12, 0x47, 0x0a, 0x13, 0x70, 0x72, 0x75, 0x65, 0x62, 0x61, 0x46, 0x75,
-	0x6e, 0x63, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x64, 0x12, 0x16, 0x2e, 0x6e, 0x61,
-	0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x4d, 0x65, 0x73, 0x73,
-	0x61, 0x67, 0x65, 0x1a, 0x16, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x45,
-	0x6d, 0x70, 0x74, 0x79, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x00, 0x42, 0x13, 0x5a,
-	0x11, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x2f, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f,
-	0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x12, 0x08, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x22, 0x0e, 0x0a, 0x0c, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x41, 0x0a, 0x09, 0x50, 0x72,
+	0x6f, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x12, 0x1a, 0x0a, 0x08, 0x4e, 0x75, 0x6d, 0x43, 0x68,
+	0x75, 0x6e, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x4e, 0x75, 0x6d, 0x43, 0x68,
+	0x75, 0x6e, 0x6b, 0x12, 0x18, 0x0a, 0x07, 0x4d, 0x61, 0x71, 0x75, 0x69, 0x6e, 0x61, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x4d, 0x61, 0x71, 0x75, 0x69, 0x6e, 0x61, 0x32, 0x54, 0x0a,
+	0x0f, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x12, 0x41, 0x0a, 0x0f, 0x6d, 0x61, 0x6e, 0x64, 0x61, 0x72, 0x50, 0x72, 0x6f, 0x70, 0x75, 0x65,
+	0x73, 0x74, 0x61, 0x12, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x50,
+	0x72, 0x6f, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x1a, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e,
+	0x6f, 0x64, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x22, 0x00, 0x28,
+	0x01, 0x30, 0x01, 0x42, 0x13, 0x5a, 0x11, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x2f,
+	0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -201,21 +151,16 @@ func file_namenode_proto_rawDescGZIP() []byte {
 	return file_namenode_proto_rawDescData
 }
 
-var file_namenode_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_namenode_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_namenode_proto_goTypes = []interface{}{
-	(*PuertoAConectar)(nil), // 0: namenode.PuertoAConectar
-	(*EmptyMessage)(nil),    // 1: namenode.EmptyMessage
-	(*Saludines)(nil),       // 2: namenode.Saludines
+	(*EmptyMessage)(nil), // 0: namenode.EmptyMessage
+	(*Propuesta)(nil),    // 1: namenode.Propuesta
 }
 var file_namenode_proto_depIdxs = []int32{
-	1, // 0: namenode.SpreaderService.redirigirCliente:input_type -> namenode.EmptyMessage
-	2, // 1: namenode.SpreaderService.printContext:input_type -> namenode.Saludines
-	1, // 2: namenode.NameNodeService.pruebaFuncionalidad:input_type -> namenode.EmptyMessage
-	0, // 3: namenode.SpreaderService.redirigirCliente:output_type -> namenode.PuertoAConectar
-	2, // 4: namenode.SpreaderService.printContext:output_type -> namenode.Saludines
-	1, // 5: namenode.NameNodeService.pruebaFuncionalidad:output_type -> namenode.EmptyMessage
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	1, // 0: namenode.NameNodeService.mandarPropuesta:input_type -> namenode.Propuesta
+	1, // 1: namenode.NameNodeService.mandarPropuesta:output_type -> namenode.Propuesta
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -228,18 +173,6 @@ func file_namenode_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_namenode_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PuertoAConectar); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_namenode_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EmptyMessage); i {
 			case 0:
 				return &v.state
@@ -251,8 +184,8 @@ func file_namenode_proto_init() {
 				return nil
 			}
 		}
-		file_namenode_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Saludines); i {
+		file_namenode_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Propuesta); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -270,9 +203,9 @@ func file_namenode_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_namenode_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 0,
-			NumServices:   2,
+			NumServices:   1,
 		},
 		GoTypes:           file_namenode_proto_goTypes,
 		DependencyIndexes: file_namenode_proto_depIdxs,
@@ -292,152 +225,11 @@ var _ grpc.ClientConnInterface
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion6
 
-// SpreaderServiceClient is the client API for SpreaderService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type SpreaderServiceClient interface {
-	RedirigirCliente(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*PuertoAConectar, error)
-	PrintContext(ctx context.Context, opts ...grpc.CallOption) (SpreaderService_PrintContextClient, error)
-}
-
-type spreaderServiceClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewSpreaderServiceClient(cc grpc.ClientConnInterface) SpreaderServiceClient {
-	return &spreaderServiceClient{cc}
-}
-
-func (c *spreaderServiceClient) RedirigirCliente(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*PuertoAConectar, error) {
-	out := new(PuertoAConectar)
-	err := c.cc.Invoke(ctx, "/namenode.SpreaderService/redirigirCliente", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *spreaderServiceClient) PrintContext(ctx context.Context, opts ...grpc.CallOption) (SpreaderService_PrintContextClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_SpreaderService_serviceDesc.Streams[0], "/namenode.SpreaderService/printContext", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &spreaderServicePrintContextClient{stream}
-	return x, nil
-}
-
-type SpreaderService_PrintContextClient interface {
-	Send(*Saludines) error
-	Recv() (*Saludines, error)
-	grpc.ClientStream
-}
-
-type spreaderServicePrintContextClient struct {
-	grpc.ClientStream
-}
-
-func (x *spreaderServicePrintContextClient) Send(m *Saludines) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *spreaderServicePrintContextClient) Recv() (*Saludines, error) {
-	m := new(Saludines)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-// SpreaderServiceServer is the server API for SpreaderService service.
-type SpreaderServiceServer interface {
-	RedirigirCliente(context.Context, *EmptyMessage) (*PuertoAConectar, error)
-	PrintContext(SpreaderService_PrintContextServer) error
-}
-
-// UnimplementedSpreaderServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedSpreaderServiceServer struct {
-}
-
-func (*UnimplementedSpreaderServiceServer) RedirigirCliente(context.Context, *EmptyMessage) (*PuertoAConectar, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RedirigirCliente not implemented")
-}
-func (*UnimplementedSpreaderServiceServer) PrintContext(SpreaderService_PrintContextServer) error {
-	return status.Errorf(codes.Unimplemented, "method PrintContext not implemented")
-}
-
-func RegisterSpreaderServiceServer(s *grpc.Server, srv SpreaderServiceServer) {
-	s.RegisterService(&_SpreaderService_serviceDesc, srv)
-}
-
-func _SpreaderService_RedirigirCliente_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyMessage)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SpreaderServiceServer).RedirigirCliente(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/namenode.SpreaderService/RedirigirCliente",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SpreaderServiceServer).RedirigirCliente(ctx, req.(*EmptyMessage))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SpreaderService_PrintContext_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(SpreaderServiceServer).PrintContext(&spreaderServicePrintContextServer{stream})
-}
-
-type SpreaderService_PrintContextServer interface {
-	Send(*Saludines) error
-	Recv() (*Saludines, error)
-	grpc.ServerStream
-}
-
-type spreaderServicePrintContextServer struct {
-	grpc.ServerStream
-}
-
-func (x *spreaderServicePrintContextServer) Send(m *Saludines) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *spreaderServicePrintContextServer) Recv() (*Saludines, error) {
-	m := new(Saludines)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-var _SpreaderService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "namenode.SpreaderService",
-	HandlerType: (*SpreaderServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "redirigirCliente",
-			Handler:    _SpreaderService_RedirigirCliente_Handler,
-		},
-	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "printContext",
-			Handler:       _SpreaderService_PrintContext_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
-		},
-	},
-	Metadata: "namenode.proto",
-}
-
 // NameNodeServiceClient is the client API for NameNodeService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type NameNodeServiceClient interface {
-	PruebaFuncionalidad(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*EmptyMessage, error)
+	MandarPropuesta(ctx context.Context, opts ...grpc.CallOption) (NameNodeService_MandarPropuestaClient, error)
 }
 
 type nameNodeServiceClient struct {
@@ -448,59 +240,91 @@ func NewNameNodeServiceClient(cc grpc.ClientConnInterface) NameNodeServiceClient
 	return &nameNodeServiceClient{cc}
 }
 
-func (c *nameNodeServiceClient) PruebaFuncionalidad(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*EmptyMessage, error) {
-	out := new(EmptyMessage)
-	err := c.cc.Invoke(ctx, "/namenode.NameNodeService/pruebaFuncionalidad", in, out, opts...)
+func (c *nameNodeServiceClient) MandarPropuesta(ctx context.Context, opts ...grpc.CallOption) (NameNodeService_MandarPropuestaClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_NameNodeService_serviceDesc.Streams[0], "/namenode.NameNodeService/mandarPropuesta", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &nameNodeServiceMandarPropuestaClient{stream}
+	return x, nil
+}
+
+type NameNodeService_MandarPropuestaClient interface {
+	Send(*Propuesta) error
+	Recv() (*Propuesta, error)
+	grpc.ClientStream
+}
+
+type nameNodeServiceMandarPropuestaClient struct {
+	grpc.ClientStream
+}
+
+func (x *nameNodeServiceMandarPropuestaClient) Send(m *Propuesta) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *nameNodeServiceMandarPropuestaClient) Recv() (*Propuesta, error) {
+	m := new(Propuesta)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // NameNodeServiceServer is the server API for NameNodeService service.
 type NameNodeServiceServer interface {
-	PruebaFuncionalidad(context.Context, *EmptyMessage) (*EmptyMessage, error)
+	MandarPropuesta(NameNodeService_MandarPropuestaServer) error
 }
 
 // UnimplementedNameNodeServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedNameNodeServiceServer struct {
 }
 
-func (*UnimplementedNameNodeServiceServer) PruebaFuncionalidad(context.Context, *EmptyMessage) (*EmptyMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PruebaFuncionalidad not implemented")
+func (*UnimplementedNameNodeServiceServer) MandarPropuesta(NameNodeService_MandarPropuestaServer) error {
+	return status.Errorf(codes.Unimplemented, "method MandarPropuesta not implemented")
 }
 
 func RegisterNameNodeServiceServer(s *grpc.Server, srv NameNodeServiceServer) {
 	s.RegisterService(&_NameNodeService_serviceDesc, srv)
 }
 
-func _NameNodeService_PruebaFuncionalidad_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyMessage)
-	if err := dec(in); err != nil {
+func _NameNodeService_MandarPropuesta_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(NameNodeServiceServer).MandarPropuesta(&nameNodeServiceMandarPropuestaServer{stream})
+}
+
+type NameNodeService_MandarPropuestaServer interface {
+	Send(*Propuesta) error
+	Recv() (*Propuesta, error)
+	grpc.ServerStream
+}
+
+type nameNodeServiceMandarPropuestaServer struct {
+	grpc.ServerStream
+}
+
+func (x *nameNodeServiceMandarPropuestaServer) Send(m *Propuesta) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *nameNodeServiceMandarPropuestaServer) Recv() (*Propuesta, error) {
+	m := new(Propuesta)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
-	if interceptor == nil {
-		return srv.(NameNodeServiceServer).PruebaFuncionalidad(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/namenode.NameNodeService/PruebaFuncionalidad",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NameNodeServiceServer).PruebaFuncionalidad(ctx, req.(*EmptyMessage))
-	}
-	return interceptor(ctx, in, info, handler)
+	return m, nil
 }
 
 var _NameNodeService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "namenode.NameNodeService",
 	HandlerType: (*NameNodeServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "pruebaFuncionalidad",
-			Handler:    _NameNodeService_PruebaFuncionalidad_Handler,
+			StreamName:    "mandarPropuesta",
+			Handler:       _NameNodeService_MandarPropuesta_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "namenode.proto",
 }

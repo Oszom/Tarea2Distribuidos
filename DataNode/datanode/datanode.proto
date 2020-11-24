@@ -20,13 +20,20 @@ message UploadStatus{
     UploadStatusCode Code = 2;
 }
 
-message isAlive{
-    bool tengoRecursos = 1;
+message CantidadChunks {
+    int32 Chunks = 1;
 }
+
+message isAlive{
+    int32 capacidad = 2;
+    bool falloRandom = 3; 
+}
+
+
 
 message EmptyMessage{}
 
 service DatanodeService{
     rpc SubirArchivo(stream Chunk) returns (stream UploadStatus) {}
-    rpc Heartbeat(stream EmptyMessage) returns (stream isAlive) {}
+    rpc VerificarPropuesta(stream CantidadChunks) returns (stream isAlive) {}
 }
