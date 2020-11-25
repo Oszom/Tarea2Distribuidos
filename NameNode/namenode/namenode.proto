@@ -14,6 +14,7 @@ message EmptyMessage {}
 message Propuesta {
     int32 NumChunk = 1;
     string Maquina = 2;
+    string NombreLibro = 3;
 }
 
 service NameNodeService {

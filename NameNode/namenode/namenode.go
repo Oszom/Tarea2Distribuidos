@@ -18,8 +18,9 @@ type ServerNamenode struct {
 
 //IntentoPropuesta is
 type IntentoPropuesta struct {
-	Chunk   int32
-	Maquina string
+	Chunk       int32
+	Maquina     string
+	NombreLibro string
 }
 
 //MandarPropuesta is
@@ -36,22 +37,82 @@ func (sr *ServerNamenode) MandarPropuesta(stream NameNodeService_MandarPropuesta
 		}
 
 		ElementoPropuesta = IntentoPropuesta{
-			Chunk:   in.NumChunk,
-			Maquina: in.Maquina,
+			Chunk:       in.NumChunk,
+			Maquina:     in.Maquina,
+			NombreLibro: in.NombreLibro,
 		}
 		listaPropuesta = append(listaPropuesta, ElementoPropuesta)
 	}
 
 	propuestasOrdenadas := compilarPropuestasMaquinas(listaPropuesta)
+	resultadoPropuestas := chequearPropuesta(propuestasOrdenadas)
 
-	//Se envia la respuesta al cliente
-	if err := stream.Send(&UploadStatus{
-		Message: "Chunk recibido",
-		Code:    UploadStatusCode_Ok}); err != nil {
-		return err
+	existenFalsos = false
+	if !resultadoPropuestas["dist58"] {
+		existenFalsos = true
+	}
+	if !resultadoPropuestas["dist59"] {
+		existenFalsos = true
+	}
+	if !resultadoPropuestas["dist60"] {
+		existenFalsos = true
+	}
+	var propuestaAEnviar []IntentoPropuesta
+	if existenFalsos {
+		newPropuesta := nuevaPropuesta(resultadoPropuestas, len(listaPropuesta), listaPropuesta[0].NombreLibro) //Propuesta Namenode
+		textoAEscribir := formatearTexto(newPropuesta)
+		escribirLog("log.txt", textoAEscribir)
+		propuestaAEnviar = newPropuesta
+		
+	} else {
+		textoAEscribir := formatearTexto(listaPropuesta) //Propuesta del Datanode
+		escribirLog("log.txt", textoAEscribir)
+		propuestaAEnviar = listaPropuesta
+		//Escribir en el log las propuestas
+		//Mandar propuesta al Datanode
 	}
 
+	for i:=0 ; i<len(propuestaAEnviar); i++ {
+
+		if err := stream.Send(&Propuesta{
+			NumChunk: propuestaAEnviar[i].Chunk,
+			Maquina:     propuestaAEnviar[i].Maquina,
+			NombreLibro:  propuestaAEnviar[i].NombreLibro); err != nil {
+			return err
+		}
+	}
+
+	stream.CloseSend()
+	//Se envia la respuesta al cliente
+	
+
 	return nil
+}
+func formatearTexto(propuesta []IntentoPropuesta) []string {
+	var textoCompleto []string
+	textoCompleto.append(textoCompleto, propuesta[0].NombreLibro+" Cantidad_Partes "+len(propuesta))
+	for i := 0; i < len(IntentoPropuesta); i++ {
+		linea := propuesta[i].NombreLibro + "_parte_" + propuesta[i].Chunk + " " + propuesta[i].Maquina + "\n"
+		textoCompleto.append(textoCompleto, linea)
+	}
+	return textoCompleto
+
+}
+
+func escribirLog(archivo string, texto []string) {
+	file, err := os.Openfile(archivo, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("Error creando el archivo: %s", err)
+	}
+
+	datawriter := bufio.NewWriter(file)
+
+	for _, data := range texto {
+		_, _ = datawriter.WriteString(data + "\n")
+	}
+
+	datawriter.Flush()
+	file.Close()
 }
 
 func compilarPropuestasMaquinas(azucar []IntentoPropuesta) map[string]int {
@@ -73,7 +134,7 @@ func compilarPropuestasMaquinas(azucar []IntentoPropuesta) map[string]int {
 
 }
 
-func nuevaPropuesta(propuestaAnterior map[string]bool, nChunks int) []IntentoPropuesta {
+func nuevaPropuesta(propuestaAnterior map[string]bool, nChunks int, nombreLibro string) []IntentoPropuesta {
 
 	var listaPropuesta []IntentoPropuesta
 
@@ -92,8 +153,9 @@ func nuevaPropuesta(propuestaAnterior map[string]bool, nChunks int) []IntentoPro
 	for i := 0; i < nChunks; i++ {
 		posMaq := i % len(maquinasDisponibles)
 		listaPropuesta = append(listaPropuesta, IntentoPropuesta{
-			Chunk:   int32(i),
-			Maquina: maquinasDisponibles[posMaq],
+			Chunk:       int32(i),
+			Maquina:     maquinasDisponibles[posMaq],
+			NombreLibro: nombreLibro,
 		})
 	}
 
