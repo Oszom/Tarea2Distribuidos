@@ -1,12 +1,15 @@
 package datanode
 
 import (
-	"Tarea2/NameNode/namenode"
 	"io"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"syscall"
+	"time"
+
+	wr "github.com/mroth/weightedrand"
 	//"golang.org/x/net/context"
 )
 
@@ -65,7 +68,7 @@ func (dn *DatanodeServer) SubirArchivo(stream DatanodeService_SubirArchivoServer
 //VerificarPropuesta is
 func (dn *DatanodeServer) VerificarPropuesta(stream DatanodeService_VerificarPropuestaServer) error {
 	for {
-		in, err := stream.Recv()
+		_, err := stream.Recv()
 		if err == io.EOF {
 			return nil
 		}
@@ -80,12 +83,21 @@ func (dn *DatanodeServer) VerificarPropuesta(stream DatanodeService_VerificarPro
 		syscall.Statfs(wd, &stat)
 
 		// Available blocks * size per block = available space in bytes
-		fmt.Println(stat.Bavail * uint64(stat.Bsize))
+		trocitos := stat.Bavail * uint64(stat.Bsize) / (250 * (1 << 10))
+
+		// Probabilidad aleatoria de que el datanode falle porque se siente mal
+		rand.Seed(time.Now().UTC().UnixNano())
+		eleccion, _ := wr.NewChooser(
+			wr.Choice{Item: true, Weight: 1},
+			wr.Choice{Item: false, Weight: 9},
+		)
+		haFallado := eleccion.Pick().(bool)
 
 		//Se envia la respuesta al cliente
-		if err := stream.Send(&UploadStatus{
-			Message: "Chunk recibido",
-			Code:    UploadStatusCode_Ok}); err != nil {
+		if err := stream.Send(&IsAlive{
+			Capacidad:   int32(trocitos),
+			FalloRandom: haFallado,
+		}); err != nil {
 			return err
 		}
 

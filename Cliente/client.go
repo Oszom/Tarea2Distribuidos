@@ -153,15 +153,7 @@ func main() {
 
 */
 
-func main() {
-	var conn *grpc.ClientConn
-	conn, err := grpc.Dial(":9000", grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("no se pudo conectar: %s", err)
-	}
-
-	defer conn.Close()
-
+func pruebaMandar(conn *grpc.ClientConn) {
 	readerTipo := bufio.NewReader(os.Stdin)
 	fmt.Printf("Ingrese nombre del archivo: ")
 	file, _ := readerTipo.ReadString('\n')
@@ -171,7 +163,7 @@ func main() {
 	partes := Roedor.Cortar(file)
 	c := datanode.NewDatanodeServiceClient(conn)
 
-	stream, err := c.SubirArchivo(context.Background())
+	stream, _ := c.SubirArchivo(context.Background())
 
 	waitc := make(chan struct{})
 
@@ -217,60 +209,54 @@ func main() {
 
 	stream.CloseSend()
 	<-waitc
+}
 
-	/*
-		c := namenode.NewSpreaderServiceClient(conn)
+func pruebaPropuesta(conn *grpc.ClientConn) {
 
-		stream, err := c.PrintContext(context.Background())
-		//log.Printf("%v, %v", response, err)
+	c := datanode.NewDatanodeServiceClient(conn)
 
-		readerTipo := bufio.NewReader(os.Stdin)
-		fmt.Printf("1 o 2, que significará, tu lo déscúbrírás: ")
-		tipo, _ := readerTipo.ReadString('\n')
-		tipo = strings.TrimSuffix(tipo, "\n")
-		tipo = strings.TrimSuffix(tipo, "\r")
+	stream, _ := c.VerificarPropuesta(context.Background())
 
-		var ingredientes [6]string
+	waitc := make(chan struct{})
 
-		if tipo == "1"{
-			ingredientes = [6]string{"mayo", "mostaza", "palta", "tomate", "miel", "aji"}
-		} else {
-			ingredientes = [6]string{"azucar rubia", "extracto de vainilla", "manjar", "leche", "crema batida", "chocolate"}
-		}
-
-
-
-		waitc := make(chan struct{})
-
-		go func() {
-			for{
-				in, err := stream.Recv()
-				if err == io.EOF {
-					close(waitc)
-					return
-				}
-
-				if err != nil {
-					log.Fatalf("Error al recibir un mensaje: %v", err)
-				}
-				log.Printf("El server retorna el siguiente mensaje: %v", in.Msg)
-			}
-		} ()
-
-		var mensaje namenode.Saludines
-
-		for _, note := range ingredientes {
-
-			mensaje = namenode.Saludines{Msg: "El pablo se la come con " + note}
-
-			if err := stream.Send(&mensaje); err != nil {
-				log.Fatalf("Failed to send a note: %v", err)
+	go func() {
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				close(waitc)
+				return
 			}
 
-			time.Sleep(1 * time.Second)
+			if err != nil {
+				log.Fatalf("Error al recibir un mensaje: %v", err)
+			}
+			log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
 		}
+	}()
 
-		stream.CloseSend()
-		<-waitc
-	*/
+	var mensaje datanode.CantidadChunks
+
+	mensaje = datanode.CantidadChunks{
+		Chunks: int32(2),
+	}
+
+	if err := stream.Send(&mensaje); err != nil {
+		log.Fatalf("Failed to send a note: %v", err)
+	}
+
+	stream.CloseSend()
+	<-waitc
+}
+
+func main() {
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial(":9000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("no se pudo conectar: %s", err)
+	}
+
+	defer conn.Close()
+
+	pruebaPropuesta(conn)
+
 }
