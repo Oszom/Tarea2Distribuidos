@@ -42,6 +42,8 @@ func (sr *ServerNamenode) MandarPropuesta(stream NameNodeService_MandarPropuesta
 		listaPropuesta = append(listaPropuesta, ElementoPropuesta)
 	}
 
+	propuestasOrdenadas := compilarPropuestasMaquinas(listaPropuesta)
+
 	//Se envia la respuesta al cliente
 	if err := stream.Send(&UploadStatus{
 		Message: "Chunk recibido",
@@ -71,18 +73,35 @@ func compilarPropuestasMaquinas(azucar []IntentoPropuesta) map[string]int {
 
 }
 
-func chequearPropuesta(propuestita []IntentoPropuesta) bool {
+func chequearPropuesta(propuestita map[string]int) bool {
 
 	maquinasDatanode := []string{"dist58", "dist59", "dist60"}
+	aceptoPropuesta := true
 
 	for i := 0; i < len(maquinasDatanode); i++ {
+		maqActual := maquinasDatanode[i]
+		chunksAUsar := propuestita[maqActual]
 
+		aceptoPropuesta = aceptoPropuesta && consultaDatanode(maqActual, chunksAUsar)
+
+	}
+
+	if aceptoPropuesta {
+		return aceptoPropuesta
 	}
 
 	return false
 }
 
-func newConnDatanode(nombreMaquina string, matrimonio IntentoPropuesta) bool {
+/*
+	consultaDatanode realiza una consulta a un datanode para ver si tiene
+	problemas con la propuesta.
+
+	Retorna
+	true si la acepta y false si la rechaza
+*/
+
+func consultaDatanode(nombreMaquina string, nEsposos int) bool {
 
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial(nombreMaquina+":9000", grpc.WithInsecure())
@@ -94,11 +113,16 @@ func newConnDatanode(nombreMaquina string, matrimonio IntentoPropuesta) bool {
 
 	c := datanode.NewDatanodeServiceClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
 
-	stream, _ := c.VerificarPropuesta(context.Background())
+	stream, err := c.VerificarPropuesta(ctx)
 
-	waitc := make(chan struct{})
+	if err != nil {
+		//Error por timeout
+		return false
+	}
+
+	waitc := make(chan bool)
 
 	go func() {
 		for {
@@ -111,14 +135,27 @@ func newConnDatanode(nombreMaquina string, matrimonio IntentoPropuesta) bool {
 			if err != nil {
 				log.Fatalf("Error al recibir un mensaje: %v", err)
 			}
+
 			log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
+
+			//Veo si ocurrio un error random
+			if in.FalloRandom {
+				waitc <- false
+			} else {
+				if in.Capacidad > int32(nEsposos) {
+					waitc <- true
+				} else {
+					waitc <- false
+				}
+			}
+
 		}
 	}()
 
 	var mensaje datanode.CantidadChunks
 
 	mensaje = datanode.CantidadChunks{
-		Chunks: int32(2),
+		Chunks: int32(nEsposos),
 	}
 
 	if err := stream.Send(&mensaje); err != nil {
@@ -126,6 +163,7 @@ func newConnDatanode(nombreMaquina string, matrimonio IntentoPropuesta) bool {
 	}
 
 	stream.CloseSend()
-	<-waitc
+	retornoDatanode := <-waitc
+	return retornoDatanode
 
 }
