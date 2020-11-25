@@ -2,7 +2,6 @@ package namenode
 
 import (
 	context "context"
-	"flag"
 	"io"
 	"time"
 
@@ -95,9 +94,7 @@ func newConnDatanode(nombreMaquina string, matrimonio IntentoPropuesta) bool {
 
 	c := datanode.NewDatanodeServiceClient(conn)
 
-	var deadlineMs = flag.Int("deadline_ms", 20*1000, "Default deadline in milliseconds.")
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(*deadlineMs)*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 
 	stream, _ := c.VerificarPropuesta(context.Background())
 
