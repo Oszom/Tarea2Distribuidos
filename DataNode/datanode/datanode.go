@@ -1,6 +1,7 @@
 package datanode
 
 import (
+	"Tarea2/NameNode/namenode"
 	"io"
 	"io/ioutil"
 	"log"
@@ -22,6 +23,12 @@ type Propuesta struct {
 	Chunk          string
 	NombreOriginal string
 	Ubicacion      int
+}
+
+//IntentoPropuesta is
+type IntentoPropuesta struct {
+	Chunk   int32
+	Maquina string
 }
 
 func generarPropuesta(propuesta []Propuesta) {
@@ -102,4 +109,22 @@ func (dn *DatanodeServer) VerificarPropuesta(stream DatanodeService_VerificarPro
 		}
 
 	}
+}
+
+func primeraPropuesta(nChunks int) []namenode.Propuesta {
+
+	var listaPropuesta []namenode.Propuesta
+
+	maquinasDisponibles := []string{"dist58", "dist59", "dist60"}
+
+	for i := 0; i < nChunks; i++ {
+		posMaq := i % len(maquinasDisponibles)
+		listaPropuesta = append(listaPropuesta, namenode.Propuesta{
+			NumChunk: int32(i),
+			Maquina:  maquinasDisponibles[posMaq],
+		})
+	}
+
+	return listaPropuesta
+
 }

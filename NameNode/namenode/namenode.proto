@@ -12,7 +12,7 @@ message EmptyMessage {}
 
 
 message Propuesta {
-    string NumChunk = 1;
+    int32 NumChunk = 1;
     string Maquina = 2;
 }
 

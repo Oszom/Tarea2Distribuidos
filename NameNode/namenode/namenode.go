@@ -18,7 +18,7 @@ type ServerNamenode struct {
 
 //IntentoPropuesta is
 type IntentoPropuesta struct {
-	Chunk   string
+	Chunk   int32
 	Maquina string
 }
 
@@ -73,24 +73,49 @@ func compilarPropuestasMaquinas(azucar []IntentoPropuesta) map[string]int {
 
 }
 
-func chequearPropuesta(propuestita map[string]int) bool {
+func nuevaPropuesta(propuestaAnterior map[string]bool, nChunks int) []IntentoPropuesta {
+
+	var listaPropuesta []IntentoPropuesta
+
+	var maquinasDisponibles []string
+
+	if propuestaAnterior["dist58"] {
+		maquinasDisponibles = append(maquinasDisponibles, "dist58")
+	}
+	if propuestaAnterior["dist59"] {
+		maquinasDisponibles = append(maquinasDisponibles, "dist59")
+	}
+	if propuestaAnterior["dist60"] {
+		maquinasDisponibles = append(maquinasDisponibles, "dist60")
+	}
+
+	for i := 0; i < nChunks; i++ {
+		posMaq := i % len(maquinasDisponibles)
+		listaPropuesta = append(listaPropuesta, IntentoPropuesta{
+			Chunk:   int32(i),
+			Maquina: maquinasDisponibles[posMaq],
+		})
+	}
+
+	return listaPropuesta
+
+}
+
+func chequearPropuesta(propuestita map[string]int) map[string]bool {
 
 	maquinasDatanode := []string{"dist58", "dist59", "dist60"}
-	aceptoPropuesta := true
+	quienSeQuedaConLaCocaDeMaradona := make(map[string]bool)
 
 	for i := 0; i < len(maquinasDatanode); i++ {
 		maqActual := maquinasDatanode[i]
 		chunksAUsar := propuestita[maqActual]
 
-		aceptoPropuesta = aceptoPropuesta && consultaDatanode(maqActual, chunksAUsar)
+		quieroHacerUnaLinea := consultaDatanode(maqActual, chunksAUsar)
+		quienSeQuedaConLaCocaDeMaradona[maqActual] = quieroHacerUnaLinea
 
 	}
 
-	if aceptoPropuesta {
-		return aceptoPropuesta
-	}
-
-	return false
+	return quienSeQuedaConLaCocaDeMaradona
 }
 
 /*
