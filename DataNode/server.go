@@ -3,8 +3,9 @@ package main
 import (
 	"Tarea2/DataNode/datanode"
 	"Tarea2/NameNode/namenode"
+	"context"
 	"io"
-	"io/ioutil"
+	//"io/ioutil"
 	"math/rand"
 	"os"
 	"syscall"
@@ -104,28 +105,34 @@ type IntentoPropuesta struct {
 
 //SubirArchivo is
 func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArchivoServer) error {
+	archivoChunks := make(map[string][]byte)
+
 	for {
 		in, err := stream.Recv()
 		if err == io.EOF {
-			return nil
+			break
 		}
 		if err != nil {
 			return err
 		}
-		mensaje := in.Content
-		nameFile := in.NombreChunk
+		archivoChunks[in.NombreChunk] = in.Content
+		//nameFile := in.NombreChunk
 
-		if _, err12 := os.Stat("/libro"); os.IsNotExist(err12) {
-			errFolder := os.Mkdir("libro", 0755)
-			if errFolder != nil {
-				//log.Printf(err)
+		//mensaje := in.Content
+
+		/*
+			if _, err12 := os.Stat("/libro"); os.IsNotExist(err12) {
+				errFolder := os.Mkdir("libro", 0755)
+				if errFolder != nil {
+					//log.Printf(err)
+				}
 			}
-		}
 
-		Andres := ioutil.WriteFile("libro/"+nameFile, mensaje, 0644)
-		if Andres != nil {
-			log.Printf("%v", Andres)
-		}
+			Andres := ioutil.WriteFile("libro/"+nameFile, mensaje, 0644)
+			if Andres != nil {
+				log.Printf("%v", Andres)
+			}
+		*/
 
 		log.Printf("Chunk %s recibido con exito.", in.NombreChunk)
 
@@ -137,6 +144,8 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 		}
 
 	}
+
+	return nil
 }
 
 //VerificarPropuesta is
@@ -202,6 +211,60 @@ func primeraPropuesta(nChunks int) []namenode.Propuesta {
 
 }
 
-func generarPropuesta(propuesta []Propuesta) {
+func propuestaNamenode(propuesta []namenode.Propuesta) ([]namenode.Propuesta, bool) {
+
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial("dist57:9000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("no se pudo conectar: %s", err)
+	}
+
+	defer conn.Close()
+
+	c := namenode.NewNameNodeServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+
+	if cancel != nil {
+		log.Print(cancel)
+	}
+
+	stream, err := c.MandarPropuesta(ctx)
+
+	if err != nil {
+		//Error por timeout
+		return propuesta, true
+	}
+
+	waitc := make(chan []namenode.Propuesta)
+	//Dejamos que un thread reciba la propuesta del namenode
+	go func() {
+		var listaPropuestaNamenode []namenode.Propuesta
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				close(waitc)
+				return
+			}
+
+			if err != nil {
+				log.Fatalf("Error al recibir un mensaje: %v", err)
+			}
+
+			listaPropuestaNamenode = append(listaPropuestaNamenode, *in)
+		}
+	}()
+	var mensajePropuesta namenode.Propuesta
+	//Enviamos la propuesta al Namenode
+	for i := 0; i < len(propuesta); i++ {
+		mensajePropuesta = propuesta[i]
+		if err := stream.Send(&mensajePropuesta); err != nil {
+			log.Fatalf("Failed to send a note: %v", err)
+		}
+	}
+
+	stream.CloseSend()
+	retornoDatanode := <-waitc
+	return retornoDatanode, false
 
 }
