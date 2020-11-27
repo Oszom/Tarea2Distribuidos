@@ -5,6 +5,7 @@ import (
 	"Tarea2/NameNode/namenode"
 	"context"
 	"io"
+
 	//"io/ioutil"
 	"math/rand"
 	"os"
@@ -106,7 +107,8 @@ type IntentoPropuesta struct {
 //SubirArchivo is
 func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArchivoServer) error {
 	archivoChunks := make(map[string][]byte)
-
+	var nombreLibro string
+	//Recibo los chunks de parte del cliente
 	for {
 		in, err := stream.Recv()
 		if err == io.EOF {
@@ -115,40 +117,32 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 		if err != nil {
 			return err
 		}
+		nombreLibro = in.NombreOriginal
 		archivoChunks[in.NombreChunk] = in.Content
-		//nameFile := in.NombreChunk
+	}
 
-		//mensaje := in.Content
+	//Generar la estructura de datos de las propuestas
+	listaPropuestaInicial := primeraPropuesta(len(archivoChunks), nombreLibro)
 
-		/*
-			if _, err12 := os.Stat("/libro"); os.IsNotExist(err12) {
-				errFolder := os.Mkdir("libro", 0755)
-				if errFolder != nil {
-					//log.Printf(err)
-				}
-			}
+	//Se envia la propuesta al namenode
+	listaPropuestaValida, errorConn := propuestaNamenode(listaPropuestaInicial)
 
-			Andres := ioutil.WriteFile("libro/"+nameFile, mensaje, 0644)
-			if Andres != nil {
-				log.Printf("%v", Andres)
-			}
-		*/
+	log.Printf("La propuesta obtenida desde el namenode es: %v \n Acaso hubo un error por timeout?: %v", listaPropuestaValida, errorConn)
 
-		log.Printf("Chunk %s recibido con exito.", in.NombreChunk)
-
-		//Se envia la respuesta al cliente
-		if err := stream.Send(&datanode.UploadStatus{
-			Message: "Chunk recibido",
-			Code:    datanode.UploadStatusCode_Ok}); err != nil {
-			return err
-		}
-
+	//Se envia la respuesta al cliente
+	if err := stream.Send(&datanode.UploadStatus{
+		Message: "Libro Subido con Exito",
+		Code:    datanode.UploadStatusCode_Ok}); err != nil {
+		return err
 	}
 
 	return nil
 }
 
-//VerificarPropuesta is
+/*
+	VerificarPropuesta le responde al namenode si este es capaz de recibir los chunks
+	designados en la propuesta generada para repartir los chunks
+*/
 func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_VerificarPropuestaServer) error {
 	for {
 		_, err := stream.Recv()
@@ -187,13 +181,34 @@ func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_Ver
 	}
 }
 
+/* func -> wea para enviar entre datanodes
+
+nameFile := in.NombreChunk
+
+mensaje := in.Content
+
+
+	if _, err12 := os.Stat("/libro"); os.IsNotExist(err12) {
+		errFolder := os.Mkdir("libro", 0755)
+		if errFolder != nil {
+			//log.Printf(err)
+		}
+	}
+
+	Andres := ioutil.WriteFile("libro/"+nameFile, mensaje, 0644)
+	if Andres != nil {
+		log.Printf("%v", Andres)
+	}
+*/
+
 /*
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 				Funciones auxiliares
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 */
 
-func primeraPropuesta(nChunks int) []namenode.Propuesta {
+//Genera la propuesta inicial
+func primeraPropuesta(nChunks int, nombreLibro string) []namenode.Propuesta {
 
 	var listaPropuesta []namenode.Propuesta
 
@@ -202,8 +217,9 @@ func primeraPropuesta(nChunks int) []namenode.Propuesta {
 	for i := 0; i < nChunks; i++ {
 		posMaq := i % len(maquinasDisponibles)
 		listaPropuesta = append(listaPropuesta, namenode.Propuesta{
-			NumChunk: int32(i),
-			Maquina:  maquinasDisponibles[posMaq],
+			NumChunk:    int32(i),
+			Maquina:     maquinasDisponibles[posMaq],
+			NombreLibro: nombreLibro,
 		})
 	}
 
@@ -211,6 +227,7 @@ func primeraPropuesta(nChunks int) []namenode.Propuesta {
 
 }
 
+//Manda la propuesta inicial al namenode y recibe una propuesta valida
 func propuestaNamenode(propuesta []namenode.Propuesta) ([]namenode.Propuesta, bool) {
 
 	var conn *grpc.ClientConn
