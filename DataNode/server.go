@@ -121,6 +121,8 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 		archivoChunks[in.NombreChunk] = in.Content
 	}
 
+	log.Printf("Deje de recibir archivos")
+
 	//Generar la estructura de datos de las propuestas
 	listaPropuestaInicial := primeraPropuesta(len(archivoChunks), nombreLibro)
 
@@ -145,13 +147,16 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 */
 func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_VerificarPropuestaServer) error {
 	for {
-		_, err := stream.Recv()
+
+		in, err := stream.Recv()
 		if err == io.EOF {
 			return nil
 		}
 		if err != nil {
 			return err
 		}
+
+		log.Printf("El namenode me pregunto si acepto la propuesta con un numero de %d Chunks", in.Chunks)
 
 		var stat syscall.Statfs_t
 
@@ -222,6 +227,8 @@ func primeraPropuesta(nChunks int, nombreLibro string) []namenode.Propuesta {
 			NombreLibro: nombreLibro,
 		})
 	}
+
+	log.Print("Genere la primera propuesta")
 
 	return listaPropuesta
 

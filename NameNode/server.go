@@ -116,6 +116,8 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 		listaPropuesta = append(listaPropuesta, ElementoPropuesta)
 	}
 
+	log.Printf("La propuesta recibida es %v\n", listaPropuesta)
+
 	propuestasOrdenadas := compilarPropuestasMaquinas(listaPropuesta)
 	resultadoPropuestas := chequearPropuesta(propuestasOrdenadas)
 
@@ -143,6 +145,8 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 		//Escribir en el log las propuestas
 		//Mandar propuesta al Datanode
 	}
+
+	log.Printf("La propuesta a enviar es %v\n", listaPropuesta)
 
 	for i := 0; i < len(propuestaAEnviar); i++ {
 

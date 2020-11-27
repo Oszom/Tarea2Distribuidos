@@ -250,7 +250,7 @@ func pruebaPropuesta(conn *grpc.ClientConn) {
 
 func main() {
 	var conn *grpc.ClientConn
-	conn, err := grpc.Dial(":9000", grpc.WithInsecure())
+	conn, err := grpc.Dial("dist58:9000", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("no se pudo conectar: %s", err)
 	}
