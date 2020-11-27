@@ -87,9 +87,9 @@ type DatanodeServer struct {
 
 //Propuesta is
 type Propuesta struct {
-	Chunk          string
-	NombreOriginal string
-	Ubicacion      int
+	NumChunk    int32
+	NombreLibro string
+	Maquina     string
 }
 
 //IntentoPropuesta is
@@ -235,7 +235,7 @@ func primeraPropuesta(nChunks int, nombreLibro string) []namenode.Propuesta {
 }
 
 //Manda la propuesta inicial al namenode y recibe una propuesta valida
-func propuestaNamenode(propuesta []namenode.Propuesta) ([]namenode.Propuesta, bool) {
+func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, bool) {
 
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial("dist57:9000", grpc.WithInsecure())
@@ -260,10 +260,10 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]namenode.Propuesta, bo
 		return propuesta, true
 	}
 
-	waitc := make(chan []namenode.Propuesta)
+	waitc := make(chan []Propuesta)
 	//Dejamos que un thread reciba la propuesta del namenode
 	go func() {
-		var listaPropuestaNamenode []namenode.Propuesta
+		var listaPropuestaNamenode []Propuesta
 		for {
 			in, err := stream.Recv()
 			if err == io.EOF {
@@ -277,7 +277,7 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]namenode.Propuesta, bo
 			}
 
 			listaPropuestaNamenode = append(listaPropuestaNamenode,
-				namenode.Propuesta{
+				Propuesta{
 					NumChunk:    in.NumChunk,
 					Maquina:     in.Maquina,
 					NombreLibro: in.NombreLibro,
