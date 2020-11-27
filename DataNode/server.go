@@ -256,8 +256,18 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, bool) {
 	stream, err := c.MandarPropuesta(ctx)
 
 	if err != nil {
+		var propuestaARetornar []Propuesta
+		for i := 0; i < len(propuesta); i++ {
+			propuestaARetornar = append(propuestaARetornar, Propuesta{
+				NumChunk:    propuesta[i].NumChunk,
+				Maquina:     propuesta[i].Maquina,
+				NombreLibro: propuesta[i].NombreLibro,
+			})
+
+		}
+
 		//Error por timeout
-		return propuesta, true
+		return propuestaARetornar, true
 	}
 
 	waitc := make(chan []Propuesta)
