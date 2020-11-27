@@ -146,7 +146,7 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 		//Mandar propuesta al Datanode
 	}
 
-	log.Printf("La propuesta a enviar es %v\n", listaPropuesta)
+	log.Printf("La propuesta a enviar es %v\n", propuestaAEnviar)
 
 	for i := 0; i < len(propuestaAEnviar); i++ {
 
@@ -173,7 +173,7 @@ func formatearTexto(propuesta []IntentoPropuesta) []string {
 	textoCompleto := []string{}
 	textoCompleto = append(textoCompleto, propuesta[0].NombreLibro+" Cantidad_Partes "+fmt.Sprint(len(propuesta)))
 	for i := 0; i < len(propuesta); i++ {
-		linea := propuesta[i].NombreLibro + "_parte_" + string(propuesta[i].Chunk) + " " + propuesta[i].Maquina + "\n"
+		linea := propuesta[i].NombreLibro + "_parte_" + fmt.Sprintf("%d", propuesta[i].Chunk) + " " + propuesta[i].Maquina + "\n"
 		textoCompleto = append(textoCompleto, linea)
 	}
 	return textoCompleto

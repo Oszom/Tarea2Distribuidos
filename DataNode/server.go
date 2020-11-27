@@ -267,6 +267,7 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]namenode.Propuesta, bo
 		for {
 			in, err := stream.Recv()
 			if err == io.EOF {
+				waitc <- listaPropuestaNamenode
 				close(waitc)
 				return
 			}
@@ -275,13 +276,22 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]namenode.Propuesta, bo
 				log.Fatalf("Error al recibir un mensaje: %v", err)
 			}
 
-			listaPropuestaNamenode = append(listaPropuestaNamenode, *in)
+			listaPropuestaNamenode = append(listaPropuestaNamenode,
+				namenode.Propuesta{
+					NumChunk:    in.NumChunk,
+					Maquina:     in.Maquina,
+					NombreLibro: in.NombreLibro,
+				})
 		}
 	}()
 	var mensajePropuesta namenode.Propuesta
 	//Enviamos la propuesta al Namenode
 	for i := 0; i < len(propuesta); i++ {
-		mensajePropuesta = propuesta[i]
+		mensajePropuesta = namenode.Propuesta{
+			NumChunk:    propuesta[i].NumChunk,
+			Maquina:     propuesta[i].Maquina,
+			NombreLibro: propuesta[i].NombreLibro,
+		}
 		if err := stream.Send(&mensajePropuesta); err != nil {
 			log.Fatalf("Failed to send a note: %v", err)
 		}

@@ -257,6 +257,6 @@ func main() {
 
 	defer conn.Close()
 
-	pruebaPropuesta(conn)
+	pruebaMandar(conn)
 
 }
