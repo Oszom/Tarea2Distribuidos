@@ -1,6 +1,7 @@
 #················································Name Node·························································
 .PHONY: runNamenode
 runNamenode: 
+	rm -f log.txt
 	protoc -I NameNode/namenode NameNode/namenode/namenode.proto --go_out=plugins=grpc:./
 	go run NameNode/server.go
 

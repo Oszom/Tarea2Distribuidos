@@ -173,7 +173,7 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 
 func formatearTexto(propuesta []IntentoPropuesta) []string {
 	textoCompleto := []string{}
-	textoCompleto = append(textoCompleto, propuesta[0].NombreLibro+" Cantidad_Partes "+fmt.Sprint(len(propuesta)))
+	textoCompleto = append(textoCompleto, propuesta[0].NombreLibro+" Cantidad_Partes "+fmt.Sprint(len(propuesta))+"\n")
 	for i := 0; i < len(propuesta); i++ {
 		linea := propuesta[i].NombreLibro + "_parte_" + fmt.Sprintf("%d", propuesta[i].Chunk) + " " + propuesta[i].Maquina + "\n"
 		textoCompleto = append(textoCompleto, linea)
