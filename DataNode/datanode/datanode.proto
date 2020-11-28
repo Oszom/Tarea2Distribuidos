@@ -29,7 +29,11 @@ message isAlive{
     bool falloRandom = 3; 
 }
 
-
+message Propuesta {
+    int32 NumChunk = 1;
+    string Maquina = 2;
+    string NombreLibro = 3;
+}
 
 message EmptyMessage{}
 
@@ -37,4 +41,5 @@ service DatanodeService{
     rpc SubirArchivo(stream Chunk) returns (stream UploadStatus) {}
     rpc VerificarPropuesta(stream CantidadChunks) returns (stream isAlive) {}
     rpc CompartirArchivoDatanode(stream Chunk) returns (stream UploadStatus) {}
+    rpc ObtenerChunk(stream Propuesta) returns (stream Chunk) {}
 }

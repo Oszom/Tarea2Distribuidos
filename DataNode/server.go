@@ -267,6 +267,10 @@ func (dn *DatanodeServer) CompartirArchivoDatanode(stream datanode.DatanodeServi
 	}
 }
 
+func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerChunkServer) error {
+	return nil
+}
+
 /*
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 				Funciones auxiliares
