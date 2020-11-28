@@ -311,7 +311,7 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 
 	if cancel != nil {
-		log.Fatalf("No se pudo conectar al namenode")
+		log.Fatalf("%v", cancel)
 	}
 
 	stream, err := c.MandarPropuesta(ctx)
