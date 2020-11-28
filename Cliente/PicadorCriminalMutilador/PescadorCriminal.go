@@ -128,7 +128,7 @@ func Cortar(archivo string) []string {
 
 	var fileSize int64 = fileInfo.Size()
 
-	const fileChunk = 250 * (1 << 10) //Tamaño en bytes de cada trozito (250 KB)
+	const fileChunk = 244 * (1 << 10) //Tamaño en bytes de cada trozito (250 KB)
 
 	// calculate total number of parts the file will be chunked into
 
