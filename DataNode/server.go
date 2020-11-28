@@ -4,22 +4,16 @@ import (
 	"Tarea2/DataNode/datanode"
 	"Tarea2/NameNode/namenode"
 	"context"
+	"fmt"
 	"io"
-
-	//"io/ioutil"
+	"io/ioutil"
+	"log"
 	"math/rand"
+	"net"
 	"os"
+	"sync"
 	"syscall"
 	"time"
-
-	//"bufio"
-	//"fmt"
-	"log"
-	"net"
-
-	//"os"
-	//"strings"
-	"sync"
 
 	wr "github.com/mroth/weightedrand"
 	"google.golang.org/grpc"
@@ -50,6 +44,8 @@ func servirServidor(wg *sync.WaitGroup, datanodeServer *DatanodeServer, puerto s
 	}
 	grpcServer := grpc.NewServer()
 
+	log.Printf("El Datanode esta listo para recibir conexiones.")
+
 	datanode.RegisterDatanodeServiceServer(grpcServer, datanodeServer)
 
 	if err := grpcServer.Serve(lis); err != nil {
@@ -61,7 +57,7 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	log.Printf("El IP del Namenode actual es: %v", getOutboundIP())
+	log.Printf("El IP del Datanode actual es: %v", getOutboundIP())
 
 	sr := DatanodeServer{}
 	//sn := namenode.ServerNamenode{}
@@ -131,6 +127,29 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 
 	log.Printf("La propuesta obtenida desde el namenode es: %v \n Acaso hubo un error por timeout?: %v", listaPropuestaValida, errorConn)
 
+	for i := 0; i < len(listaPropuestaValida); i++ {
+		actualChunk := listaPropuestaValida[i]
+		if actualChunk.Maquina != "dist58" {
+			nombreChunkActual := actualChunk.NombreLibro + "_parte_" + fmt.Sprintf("%d", actualChunk.NumChunk)
+			mandarChunk(archivoChunks[nombreChunkActual], actualChunk.Maquina, nombreChunkActual, nombreLibro)
+		} else {
+			if _, err12 := os.Stat("/libro/" + nombreLibro); os.IsNotExist(err12) {
+				errFolder := os.Mkdir("libro/"+nombreLibro, 0755)
+				if errFolder != nil {
+					//log.Printf(err)
+				}
+
+			}
+
+			chunkName := nombreLibro + "_parte_" + fmt.Sprintf("%d", actualChunk.NumChunk)
+
+			Andres := ioutil.WriteFile("libro/"+nombreLibro+"/"+chunkName, archivoChunks[chunkName], 0644)
+			if Andres != nil {
+				log.Printf("%v", Andres)
+			}
+		}
+	}
+
 	//Se envia la respuesta al cliente
 	if err := stream.Send(&datanode.UploadStatus{
 		Message: "Libro Subido con Exito",
@@ -186,25 +205,51 @@ func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_Ver
 	}
 }
 
-/* func -> wea para enviar entre datanodes
+//CompartirArchivoDatanode corresponde a la funcion encargada de recibir uno de los chunks desde un datanode a otro
+func (dn *DatanodeServer) CompartirArchivoDatanode(stream datanode.DatanodeService_CompartirArchivoDatanodeServer) error {
+	for {
 
-nameFile := in.NombreChunk
-
-mensaje := in.Content
-
-
-	if _, err12 := os.Stat("/libro"); os.IsNotExist(err12) {
-		errFolder := os.Mkdir("libro", 0755)
-		if errFolder != nil {
-			//log.Printf(err)
+		in, err := stream.Recv()
+		if err == io.EOF {
+			return nil
 		}
-	}
+		if err != nil {
+			return err
+		}
 
-	Andres := ioutil.WriteFile("libro/"+nameFile, mensaje, 0644)
-	if Andres != nil {
-		log.Printf("%v", Andres)
+		/*
+			Hago algo con lo que recibo
+		*/
+
+		nameFile := in.NombreChunk
+
+		mensaje := in.Content
+
+		if _, err12 := os.Stat("/libro/" + in.NombreOriginal); os.IsNotExist(err12) {
+			errFolder := os.Mkdir("libro/"+in.NombreOriginal, 0755)
+			if errFolder != nil {
+				//log.Printf(err)
+			}
+
+		}
+
+		Andres := ioutil.WriteFile("libro/"+in.NombreOriginal+"/"+nameFile, mensaje, 0644)
+		if Andres != nil {
+			log.Printf("%v", Andres)
+		}
+
+		log.Printf("Me llego el chunk %s", nameFile)
+
+		//Se envia la respuesta al cliente
+		if err := stream.Send(&datanode.UploadStatus{
+			Message: "Chunk recibido con exito",
+			Code:    datanode.UploadStatusCode_Ok,
+		}); err != nil {
+			return err
+		}
+
 	}
-*/
+}
 
 /*
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -311,4 +356,55 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, bool) {
 	retornoDatanode := <-waitc
 	return retornoDatanode, false
 
+}
+
+func mandarChunk(chunkActual []byte, maquinaDestino string, NombreChunk string, nombreOriginal string) bool {
+
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial(maquinaDestino+":9000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("no se pudo conectar: %s", err)
+		return false
+	}
+
+	defer conn.Close()
+
+	c := datanode.NewDatanodeServiceClient(conn)
+
+	stream, _ := c.CompartirArchivoDatanode(context.Background())
+
+	waitc := make(chan struct{})
+
+	go func() {
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				close(waitc)
+				return
+			}
+
+			if err != nil {
+				log.Fatalf("Error al recibir un mensaje: %v", err)
+			}
+			log.Printf("El server retorna el siguiente mensaje: %v", in.Message)
+		}
+	}()
+
+	var mensaje datanode.Chunk
+
+	mensaje = datanode.Chunk{
+		Content:        chunkActual,
+		NombreChunk:    NombreChunk,
+		NombreOriginal: nombreOriginal,
+		Parte:          int32(0),
+	}
+
+	if err := stream.Send(&mensaje); err != nil {
+		log.Fatalf("Failed to send a note: %v", err)
+		return false
+	}
+
+	stream.CloseSend()
+	<-waitc
+	return true
 }

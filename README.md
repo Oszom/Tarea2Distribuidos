@@ -9,3 +9,5 @@
 * _DataNode 2_ -> `dist59`
 * _DataNode 3_ -> `dist60`
 * _NameNode_ -> `dist57`
+  
+Se usa el nombre de las maquinas en vez de su ip en el log para referirse a ellas

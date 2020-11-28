@@ -369,7 +369,7 @@ var file_datanode_proto_rawDesc = []byte{
 	0x10, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64,
 	0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x44, 0x65, 0x73, 0x63, 0x6f, 0x6e, 0x6f, 0x63, 0x69, 0x64, 0x6f,
 	0x10, 0x00, 0x12, 0x06, 0x0a, 0x02, 0x4f, 0x6b, 0x10, 0x01, 0x12, 0x0b, 0x0a, 0x07, 0x46, 0x61,
-	0x6c, 0x6c, 0x69, 0x64, 0x6f, 0x10, 0x02, 0x32, 0x99, 0x01, 0x0a, 0x0f, 0x44, 0x61, 0x74, 0x61,
+	0x6c, 0x6c, 0x69, 0x64, 0x6f, 0x10, 0x02, 0x32, 0xe4, 0x01, 0x0a, 0x0f, 0x44, 0x61, 0x74, 0x61,
 	0x6e, 0x6f, 0x64, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x3d, 0x0a, 0x0c, 0x53,
 	0x75, 0x62, 0x69, 0x72, 0x41, 0x72, 0x63, 0x68, 0x69, 0x76, 0x6f, 0x12, 0x0f, 0x2e, 0x64, 0x61,
 	0x74, 0x61, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x43, 0x68, 0x75, 0x6e, 0x6b, 0x1a, 0x16, 0x2e, 0x64,
@@ -379,8 +379,13 @@ var file_datanode_proto_rawDesc = []byte{
 	0x12, 0x18, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x43, 0x61, 0x6e, 0x74,
 	0x69, 0x64, 0x61, 0x64, 0x43, 0x68, 0x75, 0x6e, 0x6b, 0x73, 0x1a, 0x11, 0x2e, 0x64, 0x61, 0x74,
 	0x61, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x69, 0x73, 0x41, 0x6c, 0x69, 0x76, 0x65, 0x22, 0x00, 0x28,
-	0x01, 0x30, 0x01, 0x42, 0x13, 0x5a, 0x11, 0x44, 0x61, 0x74, 0x61, 0x6e, 0x6f, 0x64, 0x65, 0x2f,
-	0x64, 0x61, 0x74, 0x61, 0x6e, 0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x01, 0x30, 0x01, 0x12, 0x49, 0x0a, 0x18, 0x43, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x74, 0x69, 0x72,
+	0x41, 0x72, 0x63, 0x68, 0x69, 0x76, 0x6f, 0x44, 0x61, 0x74, 0x61, 0x6e, 0x6f, 0x64, 0x65, 0x12,
+	0x0f, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x43, 0x68, 0x75, 0x6e, 0x6b,
+	0x1a, 0x16, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x55, 0x70, 0x6c, 0x6f,
+	0x61, 0x64, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x00, 0x28, 0x01, 0x30, 0x01, 0x42, 0x13,
+	0x5a, 0x11, 0x44, 0x61, 0x74, 0x61, 0x6e, 0x6f, 0x64, 0x65, 0x2f, 0x64, 0x61, 0x74, 0x61, 0x6e,
+	0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -409,10 +414,12 @@ var file_datanode_proto_depIdxs = []int32{
 	0, // 0: datanode.UploadStatus.Code:type_name -> datanode.UploadStatusCode
 	1, // 1: datanode.DatanodeService.SubirArchivo:input_type -> datanode.Chunk
 	3, // 2: datanode.DatanodeService.VerificarPropuesta:input_type -> datanode.CantidadChunks
-	2, // 3: datanode.DatanodeService.SubirArchivo:output_type -> datanode.UploadStatus
-	4, // 4: datanode.DatanodeService.VerificarPropuesta:output_type -> datanode.isAlive
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	1, // 3: datanode.DatanodeService.CompartirArchivoDatanode:input_type -> datanode.Chunk
+	2, // 4: datanode.DatanodeService.SubirArchivo:output_type -> datanode.UploadStatus
+	4, // 5: datanode.DatanodeService.VerificarPropuesta:output_type -> datanode.isAlive
+	2, // 6: datanode.DatanodeService.CompartirArchivoDatanode:output_type -> datanode.UploadStatus
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -520,6 +527,7 @@ const _ = grpc.SupportPackageIsVersion6
 type DatanodeServiceClient interface {
 	SubirArchivo(ctx context.Context, opts ...grpc.CallOption) (DatanodeService_SubirArchivoClient, error)
 	VerificarPropuesta(ctx context.Context, opts ...grpc.CallOption) (DatanodeService_VerificarPropuestaClient, error)
+	CompartirArchivoDatanode(ctx context.Context, opts ...grpc.CallOption) (DatanodeService_CompartirArchivoDatanodeClient, error)
 }
 
 type datanodeServiceClient struct {
@@ -592,10 +600,42 @@ func (x *datanodeServiceVerificarPropuestaClient) Recv() (*IsAlive, error) {
 	return m, nil
 }
 
+func (c *datanodeServiceClient) CompartirArchivoDatanode(ctx context.Context, opts ...grpc.CallOption) (DatanodeService_CompartirArchivoDatanodeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_DatanodeService_serviceDesc.Streams[2], "/datanode.DatanodeService/CompartirArchivoDatanode", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &datanodeServiceCompartirArchivoDatanodeClient{stream}
+	return x, nil
+}
+
+type DatanodeService_CompartirArchivoDatanodeClient interface {
+	Send(*Chunk) error
+	Recv() (*UploadStatus, error)
+	grpc.ClientStream
+}
+
+type datanodeServiceCompartirArchivoDatanodeClient struct {
+	grpc.ClientStream
+}
+
+func (x *datanodeServiceCompartirArchivoDatanodeClient) Send(m *Chunk) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *datanodeServiceCompartirArchivoDatanodeClient) Recv() (*UploadStatus, error) {
+	m := new(UploadStatus)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // DatanodeServiceServer is the server API for DatanodeService service.
 type DatanodeServiceServer interface {
 	SubirArchivo(DatanodeService_SubirArchivoServer) error
 	VerificarPropuesta(DatanodeService_VerificarPropuestaServer) error
+	CompartirArchivoDatanode(DatanodeService_CompartirArchivoDatanodeServer) error
 }
 
 // UnimplementedDatanodeServiceServer can be embedded to have forward compatible implementations.
@@ -607,6 +647,9 @@ func (*UnimplementedDatanodeServiceServer) SubirArchivo(DatanodeService_SubirArc
 }
 func (*UnimplementedDatanodeServiceServer) VerificarPropuesta(DatanodeService_VerificarPropuestaServer) error {
 	return status.Errorf(codes.Unimplemented, "method VerificarPropuesta not implemented")
+}
+func (*UnimplementedDatanodeServiceServer) CompartirArchivoDatanode(DatanodeService_CompartirArchivoDatanodeServer) error {
+	return status.Errorf(codes.Unimplemented, "method CompartirArchivoDatanode not implemented")
 }
 
 func RegisterDatanodeServiceServer(s *grpc.Server, srv DatanodeServiceServer) {
@@ -665,6 +708,32 @@ func (x *datanodeServiceVerificarPropuestaServer) Recv() (*CantidadChunks, error
 	return m, nil
 }
 
+func _DatanodeService_CompartirArchivoDatanode_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(DatanodeServiceServer).CompartirArchivoDatanode(&datanodeServiceCompartirArchivoDatanodeServer{stream})
+}
+
+type DatanodeService_CompartirArchivoDatanodeServer interface {
+	Send(*UploadStatus) error
+	Recv() (*Chunk, error)
+	grpc.ServerStream
+}
+
+type datanodeServiceCompartirArchivoDatanodeServer struct {
+	grpc.ServerStream
+}
+
+func (x *datanodeServiceCompartirArchivoDatanodeServer) Send(m *UploadStatus) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *datanodeServiceCompartirArchivoDatanodeServer) Recv() (*Chunk, error) {
+	m := new(Chunk)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _DatanodeService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "datanode.DatanodeService",
 	HandlerType: (*DatanodeServiceServer)(nil),
@@ -679,6 +748,12 @@ var _DatanodeService_serviceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "VerificarPropuesta",
 			Handler:       _DatanodeService_VerificarPropuesta_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "CompartirArchivoDatanode",
+			Handler:       _DatanodeService_CompartirArchivoDatanode_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},

@@ -48,6 +48,8 @@ func servirServidor(wg *sync.WaitGroup, namenodeServer *ServerNamenode, puerto s
 
 	namenode.RegisterNameNodeServiceServer(grpcServer, namenodeServer)
 
+	log.Printf("El Namenode esta listo para recibir conexiones.")
+
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve gRPC server over port %s: %v", puerto, err)
 	}

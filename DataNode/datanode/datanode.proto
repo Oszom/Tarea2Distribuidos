@@ -36,4 +36,5 @@ message EmptyMessage{}
 service DatanodeService{
     rpc SubirArchivo(stream Chunk) returns (stream UploadStatus) {}
     rpc VerificarPropuesta(stream CantidadChunks) returns (stream isAlive) {}
+    rpc CompartirArchivoDatanode(stream Chunk) returns (stream UploadStatus) {}
 }
