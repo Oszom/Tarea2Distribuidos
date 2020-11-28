@@ -14,6 +14,7 @@ import (
 	"sync"
 	"syscall"
 	"time"
+	"errors"
 
 	wr "github.com/mroth/weightedrand"
 	"google.golang.org/grpc"
@@ -268,6 +269,48 @@ func (dn *DatanodeServer) CompartirArchivoDatanode(stream datanode.DatanodeServi
 }
 
 func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerChunkServer) error {
+	
+	for {
+
+		in, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+
+		/*
+			Hago algo con lo que recibo
+		*/
+
+		pathArchivo := "libros/" + in.nombreLibro + "/" + in.nombreLibro + "_parte_" + fmt.Sprintf("%d",in.NumChunk)
+
+		if fileExists(pathArchivo){
+
+			chunkBytes, errBytes := ioutil.ReadFile(pathArchivo)
+			NombreChunk := in.nombreLibro + "_parte_" + fmt.Sprintf("%d",in.NumChunk)
+
+
+
+			if err := stream.Send(&datanode.Chunk{
+				Content: chunkBytes,
+				NombreChunk: NombreChunk,
+				NombreOriginal: in.nombreLibro,
+				Parte: in.NumChunk
+			}); err != nil {
+				return err
+			}
+
+		} else {
+			return errors.New("Archivo no encontrado")
+		}
+
+		//Se envia la respuesta al cliente
+		
+
+	}
+	
 	return nil
 }
 
@@ -432,3 +475,52 @@ func mandarChunk(chunkActual []byte, maquinaDestino string, NombreChunk string, 
 	<-waitc
 	return true
 }
+
+
+/*
+	fileExists verifica si el archivo definido por filename existe
+	y retorna true si existe o false si no
+*/
+//Codigo obtenido desde https://golangcode.com/check-if-a-file-exists/
+func fileExists(filename string) bool {
+    info, err := os.Stat(filename)
+    if os.IsNotExist(err) {
+        return false
+    }
+    return !info.IsDir()
+}
+
+
+/*
+
+//	En este codigo se responde por cada una de las peticiones que
+//	ha llegado
+
+for {
+
+	in, err := stream.Recv()
+	if err == io.EOF {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+
+	
+	//Hago algo con lo que recibo
+	
+
+	//Se envia la respuesta al cliente
+	if err := stream.Send(&datanode.UploadStatus{
+		Message: "Chunk recibido con exito",
+		Code:    datanode.UploadStatusCode_Ok,
+		}); err != nil {
+			return err
+		}
+
+	}
+	
+	return nil
+}
+
+*/

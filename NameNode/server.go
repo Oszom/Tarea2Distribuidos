@@ -171,6 +171,16 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 */
 
+type struct LibrosMaquinas {
+	string nombreLibro,
+	[]ubicacionesChunks Chunks,
+}
+
+type struct ubicacionesChunks {
+	int32 numeroChunk,
+	string ubicacionChunk,
+}
+
 func obtenerListadeLibros() []string {
 	var texto []string
 	var listaLibros []string
@@ -178,8 +188,8 @@ func obtenerListadeLibros() []string {
 
 	if err != nil {
 		log.Fatalf("Fallo al abrir el archivo.")
-
 	}
+
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
 
