@@ -7,15 +7,15 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"strconv"
 	"time"
-
 	//"bufio"
 	//"fmt"
+	//"io/ioutil"
 	"log"
 	"net"
 	"os"
-
-	//"strings"
+	"strings"
 	"sync"
 
 	"google.golang.org/grpc"
@@ -170,6 +170,43 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 				Funciones auxiliares
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 */
+
+func obtenerListadeLibros() []string {
+	var texto []string
+	var listaLibros []string
+	file, err := os.Open("NameNode/log.txt")
+
+	if err != nil {
+		log.Fatalf("Fallo al abrir el archivo.")
+
+	}
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+
+	for scanner.Scan() {
+		if len(scanner.Text()) != 0 {
+			texto = append(texto, scanner.Text())
+		}
+	}
+
+	file.Close()
+	count := 0
+
+	nombreLibro := strings.Split(texto[0], " ")[0]
+	nPartes, _ := strconv.Atoi(strings.Split(texto[0], " ")[2])
+	listaLibros = append(listaLibros, nombreLibro)
+	for i := 0; i < len(texto); i++ {
+		if count == nPartes+1 {
+			nombreLibro = strings.Split(texto[i], " ")[0]
+			listaLibros = append(listaLibros, nombreLibro)
+			nPartes, _ = strconv.Atoi(strings.Split(texto[i], " ")[2])
+			count = 0
+		}
+		count = count + 1
+
+	}
+	return listaLibros
+}
 
 func formatearTexto(propuesta []IntentoPropuesta) []string {
 	textoCompleto := []string{}
