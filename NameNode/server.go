@@ -57,16 +57,17 @@ func servirServidor(wg *sync.WaitGroup, namenodeServer *ServerNamenode, puerto s
 
 func main() {
 
-	var wg sync.WaitGroup
+	//var wg sync.WaitGroup
 
 	log.Printf("El IP del Namenode actual es: %v", getOutboundIP())
+	fmt.Println(obtenerListadeLibros())
+	/*
+		sn := ServerNamenode{}
 
-	sn := ServerNamenode{}
-
-	wg.Add(1)
-	go servirServidor(&wg, &sn, "9000")
-	wg.Wait()
-
+		wg.Add(1)
+		go servirServidor(&wg, &sn, "9000")
+		wg.Wait()
+	*/
 }
 
 /*
@@ -170,20 +171,21 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 				Funciones auxiliares
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 */
-
-type struct LibrosMaquinas {
-	string nombreLibro,
-	[]ubicacionesChunks Chunks,
+type ubicacionesChunks struct {
+	numeroChunk    int32
+	ubicacionChunk string
 }
 
-type struct ubicacionesChunks {
-	int32 numeroChunk,
-	string ubicacionChunk,
+//LibrosMaquinas is
+type LibrosMaquinas struct {
+	nombreLibro string
+	Chunks      []ubicacionesChunks
 }
 
-func obtenerListadeLibros() []string {
+func obtenerListadeLibros() []LibrosMaquinas {
 	var texto []string
-	var listaLibros []string
+	var infoLibros []LibrosMaquinas
+	var libroActual ubicacionesChunks
 	file, err := os.Open("NameNode/log.txt")
 
 	if err != nil {
@@ -201,21 +203,43 @@ func obtenerListadeLibros() []string {
 
 	file.Close()
 	count := 0
-
+	var listaUbicacionesChunks []string
 	nombreLibro := strings.Split(texto[0], " ")[0]
 	nPartes, _ := strconv.Atoi(strings.Split(texto[0], " ")[2])
-	listaLibros = append(listaLibros, nombreLibro)
 	for i := 0; i < len(texto); i++ {
-		if count == nPartes+1 {
+		if count == nPartes+1 { //Lineas donde se indica la cantidad de partes y el nomber del libro
+			listaUbicacionesChunks = nil
 			nombreLibro = strings.Split(texto[i], " ")[0]
-			listaLibros = append(listaLibros, nombreLibro)
 			nPartes, _ = strconv.Atoi(strings.Split(texto[i], " ")[2])
 			count = 0
+		} else {
+			if count != 0 {
+				//Lineas donde está la info de la ubicacion de cada chunk
+				ubicacionChunk := strings.Split(texto[i], " ")[1]
+				listaUbicacionesChunks = append(listaUbicacionesChunks, ubicacionChunk)
+			}
 		}
 		count = count + 1
+		if len(listaUbicacionesChunks) == nPartes {
+			var listita []ubicacionesChunks
+			for j := 0; j < len(listaUbicacionesChunks); j++ {
+				libroActual = ubicacionesChunks{
+					numeroChunk:    int32(j),
+					ubicacionChunk: listaUbicacionesChunks[j],
+				}
+				listita = append(listita, libroActual)
+
+			}
+			Info := LibrosMaquinas{
+				nombreLibro: nombreLibro,
+				Chunks:      listita,
+			}
+			infoLibros = append(infoLibros, Info)
+		}
 
 	}
-	return listaLibros
+
+	return infoLibros
 }
 
 func formatearTexto(propuesta []IntentoPropuesta) []string {
