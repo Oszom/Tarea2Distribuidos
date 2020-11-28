@@ -133,10 +133,17 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 			nombreChunkActual := actualChunk.NombreLibro + "_parte_" + fmt.Sprintf("%d", actualChunk.NumChunk)
 			mandarChunk(archivoChunks[nombreChunkActual], actualChunk.Maquina, nombreChunkActual, nombreLibro)
 		} else {
-			if _, err12 := os.Stat("/libro/" + nombreLibro); os.IsNotExist(err12) {
-				errFolder := os.Mkdir("libro/"+nombreLibro, 0755)
+			if _, err12 := os.Stat("libro/"); os.IsNotExist(err12) {
+				errFolder := os.Mkdir("libro", 0755)
 				if errFolder != nil {
 					//log.Printf(err)
+				}
+				if _, err12 := os.Stat("libro/" + nombreLibro); os.IsNotExist(err12) {
+					errFolder := os.Mkdir("libro/"+nombreLibro, 0755)
+					if errFolder != nil {
+						//log.Printf(err)
+					}
+
 				}
 
 			}
@@ -225,15 +232,22 @@ func (dn *DatanodeServer) CompartirArchivoDatanode(stream datanode.DatanodeServi
 
 		mensaje := in.Content
 
-		if _, err12 := os.Stat("/libro/" + in.NombreOriginal); os.IsNotExist(err12) {
-			errFolder := os.Mkdir("libro/"+in.NombreOriginal, 0755)
+		if _, err12 := os.Stat("libro/"); os.IsNotExist(err12) {
+			errFolder := os.Mkdir("libro", 0755)
 			if errFolder != nil {
 				//log.Printf(err)
+			}
+			if _, err12 := os.Stat("libro/" + in.NombreOriginal); os.IsNotExist(err12) {
+				errFolder := os.Mkdir("libro/"+in.NombreOriginal, 0755)
+				if errFolder != nil {
+					//log.Printf(err)
+				}
+
 			}
 
 		}
 
-		Andres := ioutil.WriteFile("libro/"+nameFile, mensaje, 0644)
+		Andres := ioutil.WriteFile("libro/"+in.NombreOriginal+"/"+nameFile, mensaje, 0644)
 		if Andres != nil {
 			log.Printf("Falle aqui %v", Andres)
 		}
