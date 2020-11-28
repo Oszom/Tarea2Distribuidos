@@ -154,6 +154,8 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 			if Andres != nil {
 				log.Printf("%v", Andres)
 			}
+
+			log.Printf("Me llego el chunk %s", chunkName)
 		}
 	}
 
@@ -309,7 +311,7 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 
 	if cancel != nil {
-		log.Print(cancel)
+		log.Fatalf("No se pudo conectar al namenode")
 	}
 
 	stream, err := c.MandarPropuesta(ctx)
