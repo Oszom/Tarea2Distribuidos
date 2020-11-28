@@ -233,9 +233,9 @@ func (dn *DatanodeServer) CompartirArchivoDatanode(stream datanode.DatanodeServi
 
 		}
 
-		Andres := ioutil.WriteFile("libro/"+in.NombreOriginal+"/"+nameFile, mensaje, 0644)
+		Andres := ioutil.WriteFile("libro/"+nameFile, mensaje, 0644)
 		if Andres != nil {
-			log.Printf("%v", Andres)
+			log.Printf("Falle aqui %v", Andres)
 		}
 
 		log.Printf("Me llego el chunk %s", nameFile)
