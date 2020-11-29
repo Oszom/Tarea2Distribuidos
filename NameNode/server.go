@@ -62,7 +62,6 @@ func main() {
 	var wg sync.WaitGroup
 
 	log.Printf("El IP del Namenode actual es: %v", getOutboundIP())
-	fmt.Println(obtenerListadeLibros())
 
 	sn := ServerNamenode{}
 

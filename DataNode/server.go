@@ -129,11 +129,14 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 	//Generar la estructura de datos de las propuestas
 	listaPropuestaInicial := primeraPropuesta(len(archivoChunks), nombreLibro)
 
+	var listaPropuestaValida []Propuesta
+	var errorConn error
+
 	if dn.isDistribuido {
-		listaPropuestaValida, errorConn := manejoPropuestaDistribuida(listaPropuestaInicial, nombreLibro)
+		listaPropuestaValida, errorConn = manejoPropuestaDistribuida(len(listaPropuestaInicial), nombreLibro)
 	} else {
 		//Se envia la propuesta al namenode
-		listaPropuestaValida, errorConn := propuestaNamenode(listaPropuestaInicial)
+		listaPropuestaValida, errorConn = propuestaNamenode(listaPropuestaInicial)
 	}
 
 	if errorConn != nil {
@@ -387,12 +390,12 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 		nuevaPropuesta = primeraPropuesta
 	} else {
 		if len(maquinasQueSiPueden) == 0 {
-			return []Propuesta, errors.New("Ninguna de las maquinas puede aceptar la propuesta")
+			return []Propuesta{}, errors.New("Ninguna de las maquinas puede aceptar la propuesta")
 		} else {
 			for i := 0; i < nChunks; i++ {
 				posMaq := i % len(maquinasQueSiPueden)
 				nuevaPropuesta= append(nuevaPropuesta, Propuesta{
-					Chunk:       int32(i),
+					NumChunk:       int32(i),
 					Maquina:     maquinasDisponibles[posMaq],
 					NombreLibro: nombreLibro,
 				})
@@ -543,7 +546,7 @@ func primeraPropuesta(nChunks int, nombreLibro string) []namenode.Propuesta {
 }
 
 //Manda la propuesta inicial al namenode y recibe una propuesta valida
-func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, bool) {
+func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, error) {
 
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial("dist57:9000", grpc.WithInsecure())
@@ -579,7 +582,7 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, bool) {
 		}
 
 		//Error por timeout
-		return propuestaARetornar, true
+		return propuestaARetornar, errors.New("Timeout en la conexion")
 	}
 
 	waitc := make(chan []Propuesta)
@@ -621,7 +624,7 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, bool) {
 
 	stream.CloseSend()
 	retornoDatanode := <-waitc
-	return retornoDatanode, false
+	return retornoDatanode, nil
 
 }
 
