@@ -73,9 +73,11 @@ func main() {
 			choice = strings.TrimSuffix(choice, "\r")
 			switch choice {
 			case "1":
+				log.Print("elegi 1")
 				isDistributed = true
 				break
 			case "2":
+				log.Print("elegi 2")
 				isDistributed = false
 				break
 			default:
