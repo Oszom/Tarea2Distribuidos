@@ -77,6 +77,7 @@ func main() {
 				break
 			case "2":
 				isDistributed = false
+				break
 			default:
 				fmt.Printf("Por favor, ingrese una de las opciones indicadas (1 ó 2)\n")
 			}
