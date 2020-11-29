@@ -12,6 +12,7 @@ import (
 	"math/rand"
 	"net"
 	"os"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -59,6 +60,11 @@ func main() {
 	var wg sync.WaitGroup
 
 	log.Printf("El IP del Datanode actual es: %v", getOutboundIP())
+	log.Printf("El hostname es: %s", getHostname())
+
+	if strings.Contains(getHostname(), "dist58") {
+		log.Printf("Hola, elige si quires el modo distribuido")
+	}
 
 	sr := DatanodeServer{}
 	//sn := namenode.ServerNamenode{}
@@ -79,7 +85,7 @@ func main() {
 
 //DatanodeServer is
 type DatanodeServer struct {
-	hola int
+	isDistribuido bool
 }
 
 //Propuesta is
@@ -321,6 +327,169 @@ func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerCh
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 */
 
+func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, error) {
+
+	var nuevaPropuesta []Propuesta
+
+	var primeraPropuesta []Propuesta
+
+	maquinasDisponibles := []string{"dist58", "dist59", "dist60"}
+
+	for i := 0; i < nChunks; i++ {
+		posMaq := i % len(maquinasDisponibles)
+		primeraPropuesta = append(primeraPropuesta, Propuesta{
+			NumChunk:    int32(i),
+			Maquina:     maquinasDisponibles[posMaq],
+			NombreLibro: nombreLibro,
+		})
+	}
+
+	//Map donde se muestra si la maquina aceota la propuesta
+	namenodeAprueba := make(map[string]bool)
+
+	namenodeAprueba["dist58"] = false
+	namenodeAprueba["dist59"] = false
+	namenodeAprueba["dist60"] = false
+
+	for i := 0; i < len(namenodeAprueba); i++ {
+
+		maquinaActual := maquinasDisponibles[i]
+		var sipoApruebo bool
+
+		if i < 0 {
+
+			sipoApruebo = consultaDatanode(maquinaActual, primeraPropuesta[i].NumChunk)
+
+		} else {
+
+			sipoApruebo = autoApruebo(int(primeraPropuesta[i].NumChunk))
+
+		}
+
+		namenodeAprueba[maquinaActual] = sipoApruebo
+
+	}
+
+	//Segunda Propuesta
+
+	return nuevaPropuesta, nil
+
+}
+
+func autoApruebo(nChunks int) bool {
+
+	log.Printf("El namenode me pregunto si acepto la propuesta con un numero de %d Chunks", nChunks)
+
+	var stat syscall.Statfs_t
+
+	wd, _ := os.Getwd()
+
+	syscall.Statfs(wd, &stat)
+
+	// Available blocks * size per block = available space in bytes
+	trocitos := stat.Bavail * uint64(stat.Bsize) / (250 * (1 << 10))
+
+	// Probabilidad aleatoria de que el datanode falle porque se siente mal
+	rand.Seed(time.Now().UTC().UnixNano())
+	eleccion, _ := wr.NewChooser(
+		wr.Choice{Item: false, Weight: 1},
+		wr.Choice{Item: true, Weight: 9},
+	)
+	haFallado := eleccion.Pick().(bool)
+
+	return haFallado && int(trocitos) > nChunks
+}
+
+func compilarPropuestasMaquinas(azucar []Propuesta) map[string]int {
+
+	harina := make(map[string]int)
+	harina["dist58"] = 0
+	harina["dist59"] = 0
+	harina["dist60"] = 0
+
+	var levadura Propuesta
+	huevo := 1
+
+	for i := 0; i < len(azucar); i++ {
+		levadura = azucar[i]
+		harina[levadura.Maquina] = harina[levadura.Maquina] + huevo
+	}
+
+	return harina
+
+}
+
+func consultaDatanode(nombreMaquina string, nEsposos int32) bool {
+
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial(nombreMaquina+":9000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("no se pudo conectar: %s", err)
+	}
+
+	defer conn.Close()
+
+	c := datanode.NewDatanodeServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+
+	if cancel != nil {
+		log.Print(cancel)
+	}
+
+	stream, err := c.VerificarPropuesta(ctx)
+
+	if err != nil {
+		//Error por timeout
+		return false
+	}
+
+	waitc := make(chan bool)
+
+	go func() {
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				close(waitc)
+				return
+			}
+
+			if err != nil {
+				log.Fatalf("Error al recibir un mensaje: %v", err)
+			}
+
+			log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
+
+			//Veo si ocurrio un error random
+			if in.FalloRandom {
+				waitc <- false
+			} else {
+				if in.Capacidad > int32(nEsposos) {
+					waitc <- true
+				} else {
+					waitc <- false
+				}
+			}
+
+		}
+	}()
+
+	var mensaje datanode.CantidadChunks
+
+	mensaje = datanode.CantidadChunks{
+		Chunks: int32(nEsposos),
+	}
+
+	if err := stream.Send(&mensaje); err != nil {
+		log.Fatalf("Failed to send a note: %v", err)
+	}
+
+	stream.CloseSend()
+	retornoDatanode := <-waitc
+	return retornoDatanode
+
+}
+
 //Genera la propuesta inicial
 func primeraPropuesta(nChunks int, nombreLibro string) []namenode.Propuesta {
 
@@ -488,6 +657,16 @@ func fileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
+}
+
+//Codigo obtenido para
+func getHostname() string {
+
+	name, err := os.Hostname()
+	if err != nil {
+		panic(err)
+	}
+	return name
 }
 
 /*

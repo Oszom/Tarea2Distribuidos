@@ -25,8 +25,8 @@ message CantidadChunks {
 }
 
 message isAlive{
-    int32 capacidad = 2;
-    bool falloRandom = 3; 
+    int32 capacidad = 1;
+    bool falloRandom = 2; 
 }
 
 message Propuesta {

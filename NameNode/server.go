@@ -228,6 +228,43 @@ func (sr *ServerNamenode) GetListaLibros(stream namenode.NameNodeService_GetList
 
 }
 
+//AlmacenarPropuesta is my life
+func (sr *ServerNamenode) AlmacenarPropuesta(stream namenode.NameNodeService_AlmacenarPropuestaServer) error {
+
+	var listaPropuesta []IntentoPropuesta
+	var ElementoPropuesta IntentoPropuesta
+
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		ElementoPropuesta = IntentoPropuesta{
+			Chunk:       in.NumChunk,
+			Maquina:     in.Maquina,
+			NombreLibro: in.NombreLibro,
+		}
+		listaPropuesta = append(listaPropuesta, ElementoPropuesta)
+	}
+
+	sr.BeteerreTres.Lock()
+
+	textoAEscribir := formatearTexto(listaPropuesta)
+	escribirLog("log.txt", textoAEscribir)
+
+	sr.BeteerreTres.Unlock()
+
+	if err := stream.Send(&namenode.EmptyMessage{}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 /*
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 				Funciones auxiliares
