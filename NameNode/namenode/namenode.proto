@@ -17,7 +17,12 @@ message Propuesta {
     string NombreLibro = 3;
 }
 
+message libroEnSistema {
+    string NombreLibro = 1;
+    repeated Propuesta chunks = 2;
+}
+
 service NameNodeService {
     rpc mandarPropuesta(stream Propuesta) returns (stream Propuesta) {}
-
+    rpc getListaLibros(stream EmptyMessage) returns (stream libroEnSistema) {}
 }

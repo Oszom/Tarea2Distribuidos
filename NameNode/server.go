@@ -5,10 +5,12 @@ import (
 	"Tarea2/NameNode/namenode"
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"strconv"
 	"time"
+
 	//"bufio"
 	//"fmt"
 	//"io/ioutil"
@@ -57,17 +59,17 @@ func servirServidor(wg *sync.WaitGroup, namenodeServer *ServerNamenode, puerto s
 
 func main() {
 
-	//var wg sync.WaitGroup
+	var wg sync.WaitGroup
 
 	log.Printf("El IP del Namenode actual es: %v", getOutboundIP())
 	fmt.Println(obtenerListadeLibros())
-	/*
-		sn := ServerNamenode{}
 
-		wg.Add(1)
-		go servirServidor(&wg, &sn, "9000")
-		wg.Wait()
-	*/
+	sn := ServerNamenode{}
+
+	wg.Add(1)
+	go servirServidor(&wg, &sn, "9000")
+	wg.Wait()
+
 }
 
 /*
@@ -80,7 +82,7 @@ func main() {
 
 //ServerNamenode is
 type ServerNamenode struct {
-	hola int
+	BeteerreTres sync.Mutex
 }
 
 //IntentoPropuesta is
@@ -135,10 +137,17 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 		existenFalsos = true
 	}
 	var propuestaAEnviar []IntentoPropuesta
+
+	//Manejo de concurrencia
+	sr.BeteerreTres.Lock()
+
 	if existenFalsos {
 		newPropuesta := nuevaPropuesta(resultadoPropuestas, len(listaPropuesta), listaPropuesta[0].NombreLibro) //Propuesta Namenode
-		textoAEscribir := formatearTexto(newPropuesta)
-		escribirLog("log.txt", textoAEscribir)
+		if len(newPropuesta) > 0 {
+			textoAEscribir := formatearTexto(newPropuesta)
+			escribirLog("log.txt", textoAEscribir)
+		}
+
 		propuestaAEnviar = newPropuesta
 
 	} else {
@@ -149,7 +158,14 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 		//Mandar propuesta al Datanode
 	}
 
+	//Fin de manejo de concurrencia
+	sr.BeteerreTres.Unlock()
+
 	log.Printf("La propuesta a enviar es %v\n", propuestaAEnviar)
+
+	if len(propuestaAEnviar) == 0 {
+		return errors.New("No hay namenodes disponibles")
+	}
 
 	for i := 0; i < len(propuestaAEnviar); i++ {
 
@@ -164,6 +180,52 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 	//Se envia la respuesta al cliente
 
 	return nil
+}
+
+//GetListaLibros is a bad function, a naughty one indeed.
+func (sr *ServerNamenode) GetListaLibros(stream namenode.NameNodeService_GetListaLibrosServer) error {
+	for {
+
+		_, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+
+		listaLibrosCochinones := obtenerListadeLibros()
+		log.Printf("%v", listaLibrosCochinones)
+		//Hago algo con lo que recibo
+
+		for i := 0; i < len(listaLibrosCochinones); i++ {
+
+			libroActual := listaLibrosCochinones[i]
+
+			var librosEroticosEnStock namenode.LibroEnSistema
+
+			librosEroticosEnStock.NombreLibro = libroActual.nombreLibro
+
+			for j := 0; j < len(libroActual.Chunks); j++ {
+
+				chunkActual := libroActual.Chunks[j]
+
+				librosEroticosEnStock.Chunks = append(librosEroticosEnStock.Chunks, &namenode.Propuesta{
+					NumChunk:    chunkActual.numeroChunk,
+					Maquina:     chunkActual.ubicacionChunk,
+					NombreLibro: libroActual.nombreLibro,
+				})
+			}
+
+			//Se envia la respuesta al cliente
+			if err := stream.Send(&librosEroticosEnStock); err != nil {
+				return err
+			}
+
+		}
+
+	}
+
 }
 
 /*
@@ -254,6 +316,7 @@ func formatearTexto(propuesta []IntentoPropuesta) []string {
 }
 
 func escribirLog(archivo string, texto []string) {
+
 	file, err := os.OpenFile(archivo, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalf("Error creando el archivo: %s", err)
@@ -302,6 +365,10 @@ func nuevaPropuesta(propuestaAnterior map[string]bool, nChunks int, nombreLibro 
 	}
 	if propuestaAnterior["dist60"] {
 		maquinasDisponibles = append(maquinasDisponibles, "dist60")
+	}
+
+	if len(maquinasDisponibles) == 0 {
+		return listaPropuesta
 	}
 
 	for i := 0; i < nChunks; i++ {

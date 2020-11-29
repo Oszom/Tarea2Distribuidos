@@ -4,6 +4,7 @@ import (
 	"Tarea2/DataNode/datanode"
 	"Tarea2/NameNode/namenode"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -14,7 +15,6 @@ import (
 	"sync"
 	"syscall"
 	"time"
-	"errors"
 
 	wr "github.com/mroth/weightedrand"
 	"google.golang.org/grpc"
@@ -171,8 +171,8 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 }
 
 /*
-	VerificarPropuesta le responde al namenode si este es capaz de recibir los chunks
-	designados en la propuesta generada para repartir los chunks
+VerificarPropuesta le responde al namenode si este es capaz de recibir los chunks
+designados en la propuesta generada para repartir los chunks
 */
 func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_VerificarPropuestaServer) error {
 	for {
@@ -268,8 +268,9 @@ func (dn *DatanodeServer) CompartirArchivoDatanode(stream datanode.DatanodeServi
 	}
 }
 
+//ObtenerChunk is my first love, the one i can't live without. The one who stole my heart away and broke it wihout remorse
 func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerChunkServer) error {
-	
+
 	for {
 
 		in, err := stream.Recv()
@@ -284,20 +285,23 @@ func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerCh
 			Hago algo con lo que recibo
 		*/
 
-		pathArchivo := "libros/" + in.nombreLibro + "/" + in.nombreLibro + "_parte_" + fmt.Sprintf("%d",in.NumChunk)
+		pathArchivo := "libros/" + in.NombreLibro + "/" + in.NombreLibro + "_parte_" + fmt.Sprintf("%d", in.NumChunk)
 
-		if fileExists(pathArchivo){
+		if fileExists(pathArchivo) {
 
 			chunkBytes, errBytes := ioutil.ReadFile(pathArchivo)
-			NombreChunk := in.nombreLibro + "_parte_" + fmt.Sprintf("%d",in.NumChunk)
 
+			if errBytes != nil {
+				return errBytes
+			}
 
+			NombreChunk := in.NombreLibro + "_parte_" + fmt.Sprintf("%d", in.NumChunk)
 
 			if err := stream.Send(&datanode.Chunk{
-				Content: chunkBytes,
-				NombreChunk: NombreChunk,
-				NombreOriginal: in.nombreLibro,
-				Parte: in.NumChunk
+				Content:        chunkBytes,
+				NombreChunk:    NombreChunk,
+				NombreOriginal: in.NombreLibro,
+				Parte:          in.NumChunk,
 			}); err != nil {
 				return err
 			}
@@ -307,11 +311,8 @@ func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerCh
 		}
 
 		//Se envia la respuesta al cliente
-		
 
 	}
-	
-	return nil
 }
 
 /*
@@ -476,20 +477,18 @@ func mandarChunk(chunkActual []byte, maquinaDestino string, NombreChunk string, 
 	return true
 }
 
-
 /*
 	fileExists verifica si el archivo definido por filename existe
 	y retorna true si existe o false si no
 */
 //Codigo obtenido desde https://golangcode.com/check-if-a-file-exists/
 func fileExists(filename string) bool {
-    info, err := os.Stat(filename)
-    if os.IsNotExist(err) {
-        return false
-    }
-    return !info.IsDir()
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
-
 
 /*
 
@@ -506,9 +505,9 @@ for {
 		return err
 	}
 
-	
+
 	//Hago algo con lo que recibo
-	
+
 
 	//Se envia la respuesta al cliente
 	if err := stream.Send(&datanode.UploadStatus{
@@ -519,7 +518,7 @@ for {
 		}
 
 	}
-	
+
 	return nil
 }
 

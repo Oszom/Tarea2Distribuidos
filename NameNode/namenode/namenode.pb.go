@@ -128,6 +128,61 @@ func (x *Propuesta) GetNombreLibro() string {
 	return ""
 }
 
+type LibroEnSistema struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NombreLibro string       `protobuf:"bytes,1,opt,name=NombreLibro,proto3" json:"NombreLibro,omitempty"`
+	Chunks      []*Propuesta `protobuf:"bytes,2,rep,name=chunks,proto3" json:"chunks,omitempty"`
+}
+
+func (x *LibroEnSistema) Reset() {
+	*x = LibroEnSistema{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_namenode_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LibroEnSistema) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LibroEnSistema) ProtoMessage() {}
+
+func (x *LibroEnSistema) ProtoReflect() protoreflect.Message {
+	mi := &file_namenode_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LibroEnSistema.ProtoReflect.Descriptor instead.
+func (*LibroEnSistema) Descriptor() ([]byte, []int) {
+	return file_namenode_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *LibroEnSistema) GetNombreLibro() string {
+	if x != nil {
+		return x.NombreLibro
+	}
+	return ""
+}
+
+func (x *LibroEnSistema) GetChunks() []*Propuesta {
+	if x != nil {
+		return x.Chunks
+	}
+	return nil
+}
+
 var File_namenode_proto protoreflect.FileDescriptor
 
 var file_namenode_proto_rawDesc = []byte{
@@ -139,15 +194,25 @@ var file_namenode_proto_rawDesc = []byte{
 	0x75, 0x6e, 0x6b, 0x12, 0x18, 0x0a, 0x07, 0x4d, 0x61, 0x71, 0x75, 0x69, 0x6e, 0x61, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x4d, 0x61, 0x71, 0x75, 0x69, 0x6e, 0x61, 0x12, 0x20, 0x0a,
 	0x0b, 0x4e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x4c, 0x69, 0x62, 0x72, 0x6f, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0b, 0x4e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x4c, 0x69, 0x62, 0x72, 0x6f, 0x32,
-	0x54, 0x0a, 0x0f, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x12, 0x41, 0x0a, 0x0f, 0x6d, 0x61, 0x6e, 0x64, 0x61, 0x72, 0x50, 0x72, 0x6f, 0x70,
-	0x75, 0x65, 0x73, 0x74, 0x61, 0x12, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65,
-	0x2e, 0x50, 0x72, 0x6f, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x1a, 0x13, 0x2e, 0x6e, 0x61, 0x6d,
-	0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x22,
-	0x00, 0x28, 0x01, 0x30, 0x01, 0x42, 0x13, 0x5a, 0x11, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64,
-	0x65, 0x2f, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x28, 0x09, 0x52, 0x0b, 0x4e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x4c, 0x69, 0x62, 0x72, 0x6f, 0x22,
+	0x5f, 0x0a, 0x0e, 0x6c, 0x69, 0x62, 0x72, 0x6f, 0x45, 0x6e, 0x53, 0x69, 0x73, 0x74, 0x65, 0x6d,
+	0x61, 0x12, 0x20, 0x0a, 0x0b, 0x4e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x4c, 0x69, 0x62, 0x72, 0x6f,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x4e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x4c, 0x69,
+	0x62, 0x72, 0x6f, 0x12, 0x2b, 0x0a, 0x06, 0x63, 0x68, 0x75, 0x6e, 0x6b, 0x73, 0x18, 0x02, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x50,
+	0x72, 0x6f, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x52, 0x06, 0x63, 0x68, 0x75, 0x6e, 0x6b, 0x73,
+	0x32, 0x9e, 0x01, 0x0a, 0x0f, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x12, 0x41, 0x0a, 0x0f, 0x6d, 0x61, 0x6e, 0x64, 0x61, 0x72, 0x50, 0x72,
+	0x6f, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x12, 0x13, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f,
+	0x64, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x1a, 0x13, 0x2e, 0x6e,
+	0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x75, 0x65, 0x73, 0x74,
+	0x61, 0x22, 0x00, 0x28, 0x01, 0x30, 0x01, 0x12, 0x48, 0x0a, 0x0e, 0x67, 0x65, 0x74, 0x4c, 0x69,
+	0x73, 0x74, 0x61, 0x4c, 0x69, 0x62, 0x72, 0x6f, 0x73, 0x12, 0x16, 0x2e, 0x6e, 0x61, 0x6d, 0x65,
+	0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x1a, 0x18, 0x2e, 0x6e, 0x61, 0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x6c, 0x69, 0x62,
+	0x72, 0x6f, 0x45, 0x6e, 0x53, 0x69, 0x73, 0x74, 0x65, 0x6d, 0x61, 0x22, 0x00, 0x28, 0x01, 0x30,
+	0x01, 0x42, 0x13, 0x5a, 0x11, 0x4e, 0x61, 0x6d, 0x65, 0x4e, 0x6f, 0x64, 0x65, 0x2f, 0x6e, 0x61,
+	0x6d, 0x65, 0x6e, 0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -162,19 +227,23 @@ func file_namenode_proto_rawDescGZIP() []byte {
 	return file_namenode_proto_rawDescData
 }
 
-var file_namenode_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_namenode_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_namenode_proto_goTypes = []interface{}{
-	(*EmptyMessage)(nil), // 0: namenode.EmptyMessage
-	(*Propuesta)(nil),    // 1: namenode.Propuesta
+	(*EmptyMessage)(nil),   // 0: namenode.EmptyMessage
+	(*Propuesta)(nil),      // 1: namenode.Propuesta
+	(*LibroEnSistema)(nil), // 2: namenode.libroEnSistema
 }
 var file_namenode_proto_depIdxs = []int32{
-	1, // 0: namenode.NameNodeService.mandarPropuesta:input_type -> namenode.Propuesta
-	1, // 1: namenode.NameNodeService.mandarPropuesta:output_type -> namenode.Propuesta
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: namenode.libroEnSistema.chunks:type_name -> namenode.Propuesta
+	1, // 1: namenode.NameNodeService.mandarPropuesta:input_type -> namenode.Propuesta
+	0, // 2: namenode.NameNodeService.getListaLibros:input_type -> namenode.EmptyMessage
+	1, // 3: namenode.NameNodeService.mandarPropuesta:output_type -> namenode.Propuesta
+	2, // 4: namenode.NameNodeService.getListaLibros:output_type -> namenode.libroEnSistema
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_namenode_proto_init() }
@@ -207,6 +276,18 @@ func file_namenode_proto_init() {
 				return nil
 			}
 		}
+		file_namenode_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LibroEnSistema); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -214,7 +295,7 @@ func file_namenode_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_namenode_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -241,6 +322,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type NameNodeServiceClient interface {
 	MandarPropuesta(ctx context.Context, opts ...grpc.CallOption) (NameNodeService_MandarPropuestaClient, error)
+	GetListaLibros(ctx context.Context, opts ...grpc.CallOption) (NameNodeService_GetListaLibrosClient, error)
 }
 
 type nameNodeServiceClient struct {
@@ -282,9 +364,41 @@ func (x *nameNodeServiceMandarPropuestaClient) Recv() (*Propuesta, error) {
 	return m, nil
 }
 
+func (c *nameNodeServiceClient) GetListaLibros(ctx context.Context, opts ...grpc.CallOption) (NameNodeService_GetListaLibrosClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_NameNodeService_serviceDesc.Streams[1], "/namenode.NameNodeService/getListaLibros", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nameNodeServiceGetListaLibrosClient{stream}
+	return x, nil
+}
+
+type NameNodeService_GetListaLibrosClient interface {
+	Send(*EmptyMessage) error
+	Recv() (*LibroEnSistema, error)
+	grpc.ClientStream
+}
+
+type nameNodeServiceGetListaLibrosClient struct {
+	grpc.ClientStream
+}
+
+func (x *nameNodeServiceGetListaLibrosClient) Send(m *EmptyMessage) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *nameNodeServiceGetListaLibrosClient) Recv() (*LibroEnSistema, error) {
+	m := new(LibroEnSistema)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // NameNodeServiceServer is the server API for NameNodeService service.
 type NameNodeServiceServer interface {
 	MandarPropuesta(NameNodeService_MandarPropuestaServer) error
+	GetListaLibros(NameNodeService_GetListaLibrosServer) error
 }
 
 // UnimplementedNameNodeServiceServer can be embedded to have forward compatible implementations.
@@ -293,6 +407,9 @@ type UnimplementedNameNodeServiceServer struct {
 
 func (*UnimplementedNameNodeServiceServer) MandarPropuesta(NameNodeService_MandarPropuestaServer) error {
 	return status.Errorf(codes.Unimplemented, "method MandarPropuesta not implemented")
+}
+func (*UnimplementedNameNodeServiceServer) GetListaLibros(NameNodeService_GetListaLibrosServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetListaLibros not implemented")
 }
 
 func RegisterNameNodeServiceServer(s *grpc.Server, srv NameNodeServiceServer) {
@@ -325,6 +442,32 @@ func (x *nameNodeServiceMandarPropuestaServer) Recv() (*Propuesta, error) {
 	return m, nil
 }
 
+func _NameNodeService_GetListaLibros_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(NameNodeServiceServer).GetListaLibros(&nameNodeServiceGetListaLibrosServer{stream})
+}
+
+type NameNodeService_GetListaLibrosServer interface {
+	Send(*LibroEnSistema) error
+	Recv() (*EmptyMessage, error)
+	grpc.ServerStream
+}
+
+type nameNodeServiceGetListaLibrosServer struct {
+	grpc.ServerStream
+}
+
+func (x *nameNodeServiceGetListaLibrosServer) Send(m *LibroEnSistema) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *nameNodeServiceGetListaLibrosServer) Recv() (*EmptyMessage, error) {
+	m := new(EmptyMessage)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _NameNodeService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "namenode.NameNodeService",
 	HandlerType: (*NameNodeServiceServer)(nil),
@@ -333,6 +476,12 @@ var _NameNodeService_serviceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "mandarPropuesta",
 			Handler:       _NameNodeService_MandarPropuesta_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "getListaLibros",
+			Handler:       _NameNodeService_GetListaLibros_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},

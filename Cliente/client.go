@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"time"
 
-	//"Tarea2/NameNode/namenode"
 	"Tarea2/DataNode/datanode"
+	"Tarea2/NameNode/namenode"
 	"bufio"
 	"context"
 	"fmt"
@@ -20,7 +20,42 @@ import (
 	"google.golang.org/grpc"
 )
 
-func pruebaMandar(conn *grpc.ClientConn) {
+/*
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+
+	Structs Auxiliares usados para ordenar los libros obtenidos
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+*/
+
+type ubicacionesChunks struct {
+	numeroChunk    int32
+	ubicacionChunk string
+}
+
+//LibrosMaquinas is
+type LibrosMaquinas struct {
+	nombreLibro string
+	Chunks      []ubicacionesChunks
+}
+
+/*
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+
+	Funciones para cada una de las funcialidades del cliente
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+*/
+
+func enviarArchivo() {
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial("dist58:9000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("no se pudo conectar: %s", err)
+	}
+
+	defer conn.Close()
+
 	readerTipo := bufio.NewReader(os.Stdin)
 	fmt.Printf("Ingrese nombre del archivo: ")
 	filePath, _ := readerTipo.ReadString('\n')
@@ -82,18 +117,29 @@ func pruebaMandar(conn *grpc.ClientConn) {
 	<-waitc
 }
 
-func pruebaPropuesta(conn *grpc.ClientConn) {
+func getListaLibros() []LibrosMaquinas {
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial("dist57:9000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("no se pudo conectar: %s", err)
+	}
 
-	c := datanode.NewDatanodeServiceClient(conn)
+	defer conn.Close()
 
-	stream, _ := c.VerificarPropuesta(context.Background())
+	c := namenode.NewNameNodeServiceClient(conn)
 
-	waitc := make(chan struct{})
+	stream, _ := c.GetListaLibros(context.Background())
+
+	waitc := make(chan []LibrosMaquinas)
 
 	go func() {
+
+		var listaLibros []LibrosMaquinas
+
 		for {
 			in, err := stream.Recv()
 			if err == io.EOF {
+				waitc <- listaLibros
 				close(waitc)
 				return
 			}
@@ -101,23 +147,69 @@ func pruebaPropuesta(conn *grpc.ClientConn) {
 			if err != nil {
 				log.Fatalf("Error al recibir un mensaje: %v", err)
 			}
-			log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
+
+			infoCurrLibro := parserLibroActual(in)
+
+			listaLibros = append(listaLibros, LibrosMaquinas{
+				nombreLibro: in.NombreLibro,
+				Chunks:      infoCurrLibro,
+			})
+
 		}
 	}()
 
-	var mensaje datanode.CantidadChunks
-
-	mensaje = datanode.CantidadChunks{
-		Chunks: int32(2),
-	}
+	var mensaje namenode.EmptyMessage
 
 	if err := stream.Send(&mensaje); err != nil {
 		log.Fatalf("Failed to send a note: %v", err)
 	}
 
 	stream.CloseSend()
-	<-waitc
+	librosActuales := <-waitc
+	return librosActuales
 }
+
+func descargarChunk(maquina string, nombreChunk string) {
+
+	//Descargo un chunk en especifico de un datanode
+
+}
+
+func parserLibroActual(libroActual *namenode.LibroEnSistema) []ubicacionesChunks {
+
+	var chunksArchivos []ubicacionesChunks
+
+	for i := 0; i < len(libroActual.Chunks); i++ {
+		chunkActual := libroActual.Chunks[i]
+
+		chunksArchivos = append(chunksArchivos, ubicacionesChunks{
+			numeroChunk:    chunkActual.NumChunk,
+			ubicacionChunk: chunkActual.Maquina,
+		})
+	}
+
+	return chunksArchivos
+}
+
+func descargarLibro(novelaErotica LibrosMaquinas) {
+
+	//Itero por los chunks y los bajo a su propia carpeta
+
+	//Si un chunk falta, falla toda la operacion
+
+	//Los pego y borro despues de unirlos
+
+	//Aviso por pantalla
+
+}
+
+/*
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+
+	Funcion main
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+*/
 
 func main() {
 	var conn *grpc.ClientConn
@@ -128,6 +220,6 @@ func main() {
 
 	defer conn.Close()
 
-	pruebaMandar(conn)
+	enviarArchivo()
 
 }
