@@ -129,10 +129,18 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 	//Generar la estructura de datos de las propuestas
 	listaPropuestaInicial := primeraPropuesta(len(archivoChunks), nombreLibro)
 
-	//Se envia la propuesta al namenode
-	listaPropuestaValida, errorConn := propuestaNamenode(listaPropuestaInicial)
+	if dn.isDistribuido {
+		listaPropuestaValida, errorConn := manejoPropuestaDistribuida(listaPropuestaInicial, nombreLibro)
+	} else {
+		//Se envia la propuesta al namenode
+		listaPropuestaValida, errorConn := propuestaNamenode(listaPropuestaInicial)
+	}
 
-	log.Printf("La propuesta obtenida desde el namenode es: %v \n Acaso hubo un error por timeout?: %v", listaPropuestaValida, errorConn)
+	if errorConn != nil {
+		return errorConn
+	}
+
+	log.Printf("La propuesta obtenida es: %v \n Acaso hubo un error por timeout?: %v", listaPropuestaValida, errorConn)
 
 	for i := 0; i < len(listaPropuestaValida); i++ {
 		actualChunk := listaPropuestaValida[i]
@@ -346,28 +354,50 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 	//Map donde se muestra si la maquina aceota la propuesta
 	namenodeAprueba := make(map[string]bool)
+	var maquinasQueSiPueden []string
 
 	namenodeAprueba["dist58"] = false
 	namenodeAprueba["dist59"] = false
 	namenodeAprueba["dist60"] = false
+
+	papa2020 := true
 
 	for i := 0; i < len(namenodeAprueba); i++ {
 
 		maquinaActual := maquinasDisponibles[i]
 		var sipoApruebo bool
 
-		if i < 0 {
+		if strings.Contains(maquinaActual, "dist58") {
 
-			sipoApruebo = consultaDatanode(maquinaActual, primeraPropuesta[i].NumChunk)
+			sipoApruebo = autoApruebo(int(primeraPropuesta[i].NumChunk))
 
 		} else {
 
-			sipoApruebo = autoApruebo(int(primeraPropuesta[i].NumChunk))
+			sipoApruebo = consultaDatanode(maquinaActual, primeraPropuesta[i].NumChunk)
 
 		}
 
 		namenodeAprueba[maquinaActual] = sipoApruebo
+		maquinasQueSiPueden = append(maquinasQueSiPueden,maquinaActual)
+		papa2020 = papa2020 && sipoApruebo
 
+	}
+
+	if papa2020{
+		nuevaPropuesta = primeraPropuesta
+	} else {
+		if len(maquinasQueSiPueden) == 0 {
+			return []Propuesta, errors.New("Ninguna de las maquinas puede aceptar la propuesta")
+		} else {
+			for i := 0; i < nChunks; i++ {
+				posMaq := i % len(maquinasQueSiPueden)
+				nuevaPropuesta= append(nuevaPropuesta, Propuesta{
+					Chunk:       int32(i),
+					Maquina:     maquinasDisponibles[posMaq],
+					NombreLibro: nombreLibro,
+				})
+			}
+		}
 	}
 
 	//Segunda Propuesta
