@@ -63,9 +63,10 @@ func main() {
 	log.Printf("El IP del Datanode actual es: %v", getOutboundIP())
 	log.Printf("El hostname es: %s", getHostname())
 	isDistributed := false
+	tieneElPabloLaRazon := true
 
 	if strings.Contains(getHostname(), "dist58") {
-		for {
+		for tieneElPabloLaRazon{
 			decision := bufio.NewReader(os.Stdin)
 			fmt.Printf("¿Con que algoritmo de exclusion quiere que funcione el sistema?\n1) Distribuido\n2) Centralizado \n")
 			choice, _ := decision.ReadString('\n')
@@ -75,10 +76,12 @@ func main() {
 			case "1":
 				log.Print("elegi 1")
 				isDistributed = true
+				tieneElPabloLaRazon = false
 				break
 			case "2":
 				log.Print("elegi 2")
 				isDistributed = false
+				tieneElPabloLaRazon = false
 				break
 			default:
 				fmt.Printf("Por favor, ingrese una de las opciones indicadas (1 ó 2)\n")
@@ -86,12 +89,9 @@ func main() {
 		}
 	}
 
-	if strings.Contains(getHostname(), "dist58") {
-		log.Printf("Hola, elige si quires el modo distribuido")
-	}
-
 	sr := DatanodeServer{}
 	sr.isDistribuido = isDistributed
+
 	//sn := namenode.ServerNamenode{}
 
 	wg.Add(1)
