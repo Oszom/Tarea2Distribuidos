@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"time"
 
+	Roedor "Tarea2/Cliente/PicadorCriminalMutilador"
 	"Tarea2/DataNode/datanode"
 	"Tarea2/NameNode/namenode"
 	"bufio"
@@ -13,9 +14,8 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"strings"
-
-	Roedor "Tarea2/Cliente/PicadorCriminalMutilador"
 
 	"google.golang.org/grpc"
 )
@@ -47,7 +47,7 @@ type LibrosMaquinas struct {
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 */
 
-func enviarArchivo() {
+func subirLibro() {
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial("dist58:9000", grpc.WithInsecure())
 	if err != nil {
@@ -169,9 +169,76 @@ func getListaLibros() []LibrosMaquinas {
 	return librosActuales
 }
 
-func descargarChunk(maquina string, nombreChunk string) {
+func descargarChunk(maquina string, numChunk int32, nombreLibro string) {
 
 	//Descargo un chunk en especifico de un datanode
+
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial(maquina+":9000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("no se pudo conectar: %s", err)
+	}
+
+	defer conn.Close()
+
+	c := datanode.NewDatanodeServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+
+	if cancel != nil {
+		//
+	}
+	stream, err := c.ObtenerChunk(ctx)
+
+	if err != nil {
+		log.Fatalf("El datanode se puso a ver documentales del discovery y no te quiere responder.")
+	}
+
+	waitc := make(chan struct{})
+
+	go func() {
+
+		var Chunksito datanode.Chunk
+
+		for { //Aquí se reciben los chunks
+			in, err := stream.Recv()
+			if err == io.EOF {
+				close(waitc)
+				return
+			}
+
+			if err != nil {
+				log.Fatalf("Error al recibir un mensaje: %v", err)
+			}
+
+			Chunksito = datanode.Chunk{
+				Content:        in.Content,
+				NombreChunk:    in.NombreChunk,
+				NombreOriginal: in.NombreOriginal,
+				Parte:          in.Parte,
+			}
+
+			contenidoChunk := Chunksito.Content
+			errorsito := ioutil.WriteFile(Chunksito.NombreChunk, contenidoChunk, 0644)
+			if errorsito != nil {
+				fmt.Println(errorsito)
+			}
+		}
+	}()
+	var mensaje datanode.Propuesta
+	mensaje = datanode.Propuesta{
+		NumChunk:    numChunk,
+		Maquina:     maquina,
+		NombreLibro: nombreLibro,
+	}
+
+	if err := stream.Send(&mensaje); err != nil {
+		log.Fatalf("Failed to send a note: %v", err)
+	}
+
+	stream.CloseSend()
+	<-waitc
+	return
 
 }
 
@@ -192,15 +259,26 @@ func parserLibroActual(libroActual *namenode.LibroEnSistema) []ubicacionesChunks
 }
 
 func descargarLibro(novelaErotica LibrosMaquinas) {
+	listaChunks := novelaErotica.Chunks
 
-	//Itero por los chunks y los bajo a su propia carpeta
+	libro := novelaErotica.nombreLibro
+	for i := 0; i < len(listaChunks); i++ {
+		maquina := listaChunks[i].ubicacionChunk
+		numChunk := listaChunks[i].numeroChunk
+		descargarChunk(maquina, numChunk, libro)
+	}
 
-	//Si un chunk falta, falla toda la operacion
+	Roedor.Juntar(libro, uint64(len(listaChunks)))
 
-	//Los pego y borro despues de unirlos
+}
 
-	//Aviso por pantalla
-
+func parsearListado(listado []LibrosMaquinas) []string {
+	var enumeraciones []string
+	for i := 0; i < len(listado); i++ {
+		numerito := strconv.Itoa(i + 1)
+		enumeraciones = append(enumeraciones, numerito+" - "+listado[i].nombreLibro+"\n")
+	}
+	return enumeraciones
 }
 
 /*
@@ -212,14 +290,34 @@ func descargarLibro(novelaErotica LibrosMaquinas) {
 */
 
 func main() {
-	var conn *grpc.ClientConn
-	conn, err := grpc.Dial("dist58:9000", grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("no se pudo conectar: %s", err)
+	for {
+		decision := bufio.NewReader(os.Stdin)
+		fmt.Printf("¿Que tarea desea realizar?\n1) Subir Archivo\n2) Descargar Libro \n")
+		choice, _ := decision.ReadString('\n')
+		choice = strings.TrimSuffix(choice, "\n")
+		choice = strings.TrimSuffix(choice, "\r")
+		switch choice {
+		case "1":
+			subirLibro()
+		case "2":
+			lista := getListaLibros()
+			opciones := parsearListado(lista)
+			for i := 0; i < len(opciones); i++ {
+				fmt.Println(opciones[i])
+			}
+			libroADescargar := bufio.NewReader(os.Stdin)
+			fmt.Println("Elije el número de uno de los libros anteriores que deseas descargar: ")
+			librillo, _ := libroADescargar.ReadString('\n')
+			librillo = strings.TrimSuffix(librillo, "\n")
+			librillo = strings.TrimSuffix(librillo, "\r")
+			librilloInt, _ := strconv.Atoi(librillo)
+			fmt.Println("Ha decidido descargar el libro " + lista[librilloInt-1].nombreLibro)
+			libroElegido := lista[librilloInt-1]
+			descargarLibro(libroElegido)
+		default:
+			fmt.Printf("Por favor, ingrese una de las opciones indicadas (1 ó 2)\n")
+
+		}
 	}
-
-	defer conn.Close()
-
-	enviarArchivo()
 
 }
