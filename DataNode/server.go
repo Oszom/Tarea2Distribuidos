@@ -15,6 +15,7 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+	"bufio"
 	"time"
 
 	wr "github.com/mroth/weightedrand"
@@ -61,12 +62,33 @@ func main() {
 
 	log.Printf("El IP del Datanode actual es: %v", getOutboundIP())
 	log.Printf("El hostname es: %s", getHostname())
+	isDistributed := false
+
+	if strings.Contains(getHostname(), "dist58") {
+		for {
+			decision := bufio.NewReader(os.Stdin)
+			fmt.Printf("¿Con que algoritmo de exclusion quiere que funcione el sistema?\n1) Distribuido\n2) Centralizado \n")
+			choice, _ := decision.ReadString('\n')
+			choice = strings.TrimSuffix(choice, "\n")
+			choice = strings.TrimSuffix(choice, "\r")
+			switch choice {
+			case "1":
+				isDistributed = true
+				break
+			case "2":
+				isDistributed = false
+			default:
+				fmt.Printf("Por favor, ingrese una de las opciones indicadas (1 ó 2)\n")
+			}
+		}
+	}
 
 	if strings.Contains(getHostname(), "dist58") {
 		log.Printf("Hola, elige si quires el modo distribuido")
 	}
 
 	sr := DatanodeServer{}
+	sr.isDistribuido = isDistributed
 	//sn := namenode.ServerNamenode{}
 
 	wg.Add(1)
