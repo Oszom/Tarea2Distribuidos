@@ -173,7 +173,7 @@ func descargarChunk(maquina string, numChunk int32, nombreLibro string) {
 
 	//Descargo un chunk en especifico de un datanode
 
-	log.Printf("Le voy a pedir el chunk %d a la maquina %s. Deseame suerte", numChunk, maquina)
+	//log.Printf("Le voy a pedir el chunk %d a la maquina %s. Deseame suerte", numChunk, maquina)
 
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial(maquina+":9000", grpc.WithInsecure())
@@ -317,7 +317,6 @@ func main() {
 				librillo = strings.TrimSuffix(librillo, "\n")
 				librillo = strings.TrimSuffix(librillo, "\r")
 				librilloInt, _ = strconv.Atoi(librillo)
-				fmt.Println(len(opciones))
 				if librilloInt > 0 && librilloInt < len(opciones) {
 
 					inputValido = false
