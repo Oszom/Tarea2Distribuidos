@@ -331,6 +331,8 @@ func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerCh
 
 		pathArchivo := "libros/" + in.NombreLibro + "/" + in.NombreLibro + "_parte_" + fmt.Sprintf("%d", in.NumChunk)
 
+		log.Printf("Me pidieron el archivo con el siguiente path:\n%s",pathArchivo)
+
 		if fileExists(pathArchivo) {
 
 			chunkBytes, errBytes := ioutil.ReadFile(pathArchivo)
