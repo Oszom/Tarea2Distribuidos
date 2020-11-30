@@ -436,6 +436,8 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 	//Segunda Propuesta
 
+	mandarAlLog(nuevaPropuesta)
+
 	return nuevaPropuesta, nil
 
 }
