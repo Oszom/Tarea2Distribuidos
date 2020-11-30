@@ -259,9 +259,9 @@ func (sr *ServerNamenode) AlmacenarPropuesta(stream namenode.NameNodeService_Alm
 	sr.BeteerreTres.Unlock()
 
 	if err := stream.Send(&namenode.Propuesta{
-		NumChunk: int32(13),
-		Maquina: "La Marina",
-		NombreLibro: "El dia menos pensado"
+		NumChunk:    int32(13),
+		Maquina:     "La Marina",
+		NombreLibro: "El dia menos pensado",
 	}); err != nil {
 		log.Printf("Error al enviar")
 		return err
