@@ -410,7 +410,9 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 		}
 
 		namenodeAprueba[maquinaActual] = sipoApruebo
-		maquinasQueSiPueden = append(maquinasQueSiPueden,maquinaActual)
+		if sipoApruebo{
+			maquinasQueSiPueden = append(maquinasQueSiPueden,maquinaActual)
+		}
 		papa2020 = papa2020 && sipoApruebo
 
 	}
