@@ -160,7 +160,7 @@ func (sr *ServerNamenode) MandarPropuesta(stream namenode.NameNodeService_Mandar
 	//Fin de manejo de concurrencia
 	sr.BeteerreTres.Unlock()
 
-	log.Printf("La propuesta a enviar es %v\n", propuestaAEnviar)
+	//log.Printf("La propuesta a enviar es %v\n", propuestaAEnviar)
 
 	if len(propuestaAEnviar) == 0 {
 		return errors.New("No hay namenodes disponibles")

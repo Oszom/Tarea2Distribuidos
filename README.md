@@ -17,10 +17,10 @@
 
 -   Se usa el nombre de las maquinas en vez de su ip en el log para referirse a ellas.
 -   El DataNode almacenado en la máquina 'dist58' es el que siempre va a recibir los chunks por parte del cliente,
-    el cual se va a contactar con el Namenode, al iniciar este, se va a consultar si se quiere usar el algoritmo centralizado o distribuido. 
+    el cual se va a contactar con el Namenode, al iniciar este, se va a consultar si se quiere usar el algoritmo centralizado o distribuido, indicar esto antes de iniciar el Cliente. 
 -   Es necesario correr primero el Namenode y luego los Datanode antes de correr el Cliente.
 -   Los fallos que consideramos bajo los cuales no se acepte una propuesta de parte de un Datanode son: Que un Datanode  se encuentre caído, que un Datanode no tenga el espacio suficiente para almacenar la cantidad de Chunks que se le proponen y un error aleatorio con una probabilidad de un 10%.
 - Se debe haber subido al menos un archivo antes de intentar descargar un libro.
 - No subir 2 archivos con el mismo nombre.
 - Cuando corre el Namenode se borra el archivo log.txt automáticamente.
-- Favor de ingresar solo número al momento de seleccionar un libro a descargar.
+- Favor de ingresar solo números al momento de seleccionar un libro a descargar.
