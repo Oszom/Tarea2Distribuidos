@@ -329,7 +329,7 @@ func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerCh
 			Hago algo con lo que recibo
 		*/
 
-		pathArchivo := "libros/" + in.NombreLibro + "/" + in.NombreLibro + "_parte_" + fmt.Sprintf("%d", in.NumChunk)
+		pathArchivo := "libro/" + in.NombreLibro + "/" + in.NombreLibro + "_parte_" + fmt.Sprintf("%d", in.NumChunk)
 
 		log.Printf("Me pidieron el archivo con el siguiente path:\n%s",pathArchivo)
 
