@@ -173,6 +173,8 @@ func descargarChunk(maquina string, numChunk int32, nombreLibro string) {
 
 	//Descargo un chunk en especifico de un datanode
 
+	log.Printf("Le voy a pedir el chunk %d a la maquina %s. Deseame suerte",numChunk,maquina)
+
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial(maquina+":9000", grpc.WithInsecure())
 	if err != nil {
@@ -274,6 +276,7 @@ func descargarLibro(novelaErotica LibrosMaquinas) {
 
 func parsearListado(listado []LibrosMaquinas) []string {
 	var enumeraciones []string
+	enumeraciones = append(enumeraciones,"Listado de libros disponibles en el sistema.\n\n")
 	for i := 0; i < len(listado); i++ {
 		numerito := strconv.Itoa(i + 1)
 		enumeraciones = append(enumeraciones, numerito+" - "+listado[i].nombreLibro+"\n")
