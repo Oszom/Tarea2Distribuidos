@@ -20,7 +20,15 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 	// Step 2: Grab the num of chars you need
 	//nombrecorto := string(a[0 : len(nombreArchivo)-4])
 
-	newFileName := nombreArchivo
+	if _, err12 := os.Stat("LibrosDescargados/"); os.IsNotExist(err12) {
+		errFolder := os.Mkdir("LibrosDescargados", 0755)
+		if errFolder != nil {
+			//log.Printf(err)
+		}
+
+	}
+
+	newFileName := "LibrosDescargados/" + nombreArchivo
 	_, err := os.Create(newFileName)
 
 	if err != nil {

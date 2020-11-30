@@ -1,0 +1,35 @@
+prueba.gif Cantidad_Partes 8
+
+prueba.gif_parte_0 dist58
+
+prueba.gif_parte_1 dist59
+
+prueba.gif_parte_2 dist60
+
+prueba.gif_parte_3 dist58
+
+prueba.gif_parte_4 dist59
+
+prueba.gif_parte_5 dist60
+
+prueba.gif_parte_6 dist58
+
+prueba.gif_parte_7 dist59
+
+prueba.gif234 Cantidad_Partes 8
+
+prueba.gif_parte_0 dist58
+
+prueba.gif_parte_1 dist59
+
+prueba.gif_parte_2 dist60
+
+prueba.gif_parte_3 dist58
+
+prueba.gif_parte_4 dist59
+
+prueba.gif_parte_5 dist60
+
+prueba.gif_parte_6 dist58
+
+prueba.gif_parte_7 dist59
