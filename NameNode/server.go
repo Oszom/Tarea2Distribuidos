@@ -239,6 +239,7 @@ func (sr *ServerNamenode) AlmacenarPropuesta(stream namenode.NameNodeService_Alm
 			break
 		}
 		if err != nil {
+			log.Printf("Error al recibir")
 			return err
 		}
 
@@ -258,6 +259,7 @@ func (sr *ServerNamenode) AlmacenarPropuesta(stream namenode.NameNodeService_Alm
 	sr.BeteerreTres.Unlock()
 
 	if err := stream.Send(&namenode.EmptyMessage{}); err != nil {
+		log.Printf("Error al enviar")
 		return err
 	}
 
