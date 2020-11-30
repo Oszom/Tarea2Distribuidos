@@ -438,7 +438,6 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 	//Segunda Propuesta
 
-	log.Printf("La nueva propuesta es: %v", nuevaPropuesta)
 	errorLog := mandarAlLog(nuevaPropuesta)
 
 	if errorLog != nil {
@@ -766,8 +765,6 @@ func mandarAlLog(azucar []Propuesta) error {
 
 	var mensaje namenode.Propuesta
 
-	log.Printf("LA propuesta acskdjasd es: %v", azucar)
-
 	for i := 0; i < len(azucar); i++ {
 
 		mensaje = namenode.Propuesta{
@@ -784,6 +781,7 @@ func mandarAlLog(azucar []Propuesta) error {
 	}
 
 	stream.CloseSend()
+	<-waitc
 	return nil
 }
 
