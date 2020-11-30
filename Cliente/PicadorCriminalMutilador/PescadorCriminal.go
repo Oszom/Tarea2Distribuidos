@@ -84,7 +84,7 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 		// write/save buffer to disk
 		//ioutil.WriteFile(newFileName, chunkBufferBytes, os.ModeAppend)
 
-		_, err := file.Write(chunkBufferBytes)
+		_, err = file.Write(chunkBufferBytes)
 
 		if err != nil {
 			fmt.Println(err)
