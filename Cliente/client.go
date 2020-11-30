@@ -75,7 +75,7 @@ func subirLibro() {
 
 	go func() {
 		for {
-			in, err := stream.Recv()
+			_, err := stream.Recv()
 			if err == io.EOF {
 				close(waitc)
 				return
@@ -84,7 +84,7 @@ func subirLibro() {
 			if err != nil {
 				log.Fatalf("Error al recibir un mensaje: %v", err)
 			}
-			log.Printf("El server retorna el siguiente mensaje: %v", in.Message)
+			//log.Printf("El server retorna el siguiente mensaje: %v", in.Message)
 		}
 	}()
 
@@ -173,7 +173,7 @@ func descargarChunk(maquina string, numChunk int32, nombreLibro string) {
 
 	//Descargo un chunk en especifico de un datanode
 
-	log.Printf("Le voy a pedir el chunk %d a la maquina %s. Deseame suerte",numChunk,maquina)
+	log.Printf("Le voy a pedir el chunk %d a la maquina %s. Deseame suerte", numChunk, maquina)
 
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial(maquina+":9000", grpc.WithInsecure())
@@ -193,7 +193,7 @@ func descargarChunk(maquina string, numChunk int32, nombreLibro string) {
 	stream, err := c.ObtenerChunk(ctx)
 
 	if err != nil {
-		log.Fatalf("El datanode se puso a ver documentales del discovery y no te quiere responder.")
+		log.Fatalf("El datanode no responde, error de timeout.")
 	}
 
 	waitc := make(chan struct{})
@@ -271,12 +271,12 @@ func descargarLibro(novelaErotica LibrosMaquinas) {
 	}
 
 	Roedor.Juntar(libro, uint64(len(listaChunks)))
-
+	fmt.Println("Libro descargado con éxito!")
 }
 
 func parsearListado(listado []LibrosMaquinas) []string {
 	var enumeraciones []string
-	enumeraciones = append(enumeraciones,"Listado de libros disponibles en el sistema.\n\n")
+	enumeraciones = append(enumeraciones, "Listado de libros disponibles en el sistema.\n\n")
 	for i := 0; i < len(listado); i++ {
 		numerito := strconv.Itoa(i + 1)
 		enumeraciones = append(enumeraciones, numerito+" - "+listado[i].nombreLibro+"\n")
@@ -295,7 +295,7 @@ func parsearListado(listado []LibrosMaquinas) []string {
 func main() {
 	for {
 		decision := bufio.NewReader(os.Stdin)
-		fmt.Printf("¿Que tarea desea realizar?\n1) Subir Archivo\n2) Descargar Libro \n")
+		fmt.Printf("¿Que tarea desea realizar?\n1) Subir Libro\n2) Descargar Libro \n")
 		choice, _ := decision.ReadString('\n')
 		choice = strings.TrimSuffix(choice, "\n")
 		choice = strings.TrimSuffix(choice, "\r")
@@ -308,15 +308,25 @@ func main() {
 			for i := 0; i < len(opciones); i++ {
 				fmt.Println(opciones[i])
 			}
-			libroADescargar := bufio.NewReader(os.Stdin)
-			fmt.Println("Elije el número de uno de los libros anteriores que deseas descargar: ")
-			librillo, _ := libroADescargar.ReadString('\n')
-			librillo = strings.TrimSuffix(librillo, "\n")
-			librillo = strings.TrimSuffix(librillo, "\r")
-			librilloInt, _ := strconv.Atoi(librillo)
-			fmt.Println("Ha decidido descargar el libro " + lista[librilloInt-1].nombreLibro)
+			inputValido := true
+			var librilloInt int
+			for inputValido {
+				libroADescargar := bufio.NewReader(os.Stdin)
+				fmt.Println("Elije el número de uno de los libros anteriores que deseas descargar: ")
+				librillo, _ := libroADescargar.ReadString('\n')
+				librillo = strings.TrimSuffix(librillo, "\n")
+				librillo = strings.TrimSuffix(librillo, "\r")
+				librilloInt, _ = strconv.Atoi(librillo)
+				if librilloInt > len(opciones) || librilloInt < len(opciones) {
+					fmt.Println("Por favor elija un número que esté dentro del rango indicado: ")
+					inputValido = true
+				} else {
+					inputValido = false
+				}
+			}
 			libroElegido := lista[librilloInt-1]
 			descargarLibro(libroElegido)
+
 		default:
 			fmt.Printf("Por favor, ingrese una de las opciones indicadas (1 ó 2)\n")
 

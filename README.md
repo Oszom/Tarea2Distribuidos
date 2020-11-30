@@ -23,3 +23,4 @@
 - Se debe haber subido al menos un archivo antes de intentar descargar un libro.
 - No subir 2 archivos con el mismo nombre.
 - Cuando corre el Namenode se borra el archivo log.txt automáticamente.
+- Favor de ingresar solo número al momento de seleccionar un libro a descargar.

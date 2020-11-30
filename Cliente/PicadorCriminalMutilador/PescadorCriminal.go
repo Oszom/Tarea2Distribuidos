@@ -139,7 +139,7 @@ func Cortar(archivo string) []string {
 
 	totalPartsNum := uint64(math.Ceil(float64(fileSize) / float64(fileChunk)))
 
-	fmt.Printf("Dividiendo en %d trozos.\n", totalPartsNum)
+	fmt.Printf("Dividiendo en %d chunks.\n", totalPartsNum)
 
 	for i := uint64(0); i < totalPartsNum; i++ {
 
