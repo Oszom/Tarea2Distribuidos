@@ -41,6 +41,7 @@ rc:
 
 .PHONY: rd
 rd:
+	git pull
 	rm -rf libro
 	protoc -I DataNode/datanode DataNode/datanode/datanode.proto --go_out=plugins=grpc:./
 	go run DataNode/server.go
