@@ -318,7 +318,7 @@ func main() {
 				librillo = strings.TrimSuffix(librillo, "\r")
 				librilloInt, _ = strconv.Atoi(librillo)
 				fmt.Println(len(opciones))
-				if librilloInt > 0 || librilloInt < len(opciones) {
+				if librilloInt > 0 && librilloInt < len(opciones) {
 
 					inputValido = false
 				} else {
