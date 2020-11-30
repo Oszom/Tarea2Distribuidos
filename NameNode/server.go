@@ -194,7 +194,7 @@ func (sr *ServerNamenode) GetListaLibros(stream namenode.NameNodeService_GetList
 		}
 
 		listaLibrosCochinones := obtenerListadeLibros()
-		log.Printf("%v", listaLibrosCochinones)
+		//log.Printf("%v", listaLibrosCochinones)
 		//Hago algo con lo que recibo
 
 		for i := 0; i < len(listaLibrosCochinones); i++ {
