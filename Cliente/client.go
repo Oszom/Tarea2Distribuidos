@@ -319,10 +319,11 @@ func main() {
 				librilloInt, _ = strconv.Atoi(librillo)
 				fmt.Println(len(opciones))
 				if librilloInt > 0 || librilloInt < len(opciones) {
+
+					inputValido = false
+				} else {
 					fmt.Println("Por favor elija un número que esté dentro del rango indicado: ")
 					inputValido = true
-				} else {
-					inputValido = false
 				}
 			}
 			libroElegido := lista[librilloInt-1]
