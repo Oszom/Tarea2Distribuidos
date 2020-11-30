@@ -438,7 +438,7 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 	//Segunda Propuesta
 
-	log.Panicf("La nueva propuesta es: %v", nuevaPropuesta)
+	log.Printf("La nueva propuesta es: %v", nuevaPropuesta)
 	errorLog := mandarAlLog(nuevaPropuesta)
 
 	if errorLog != nil {
