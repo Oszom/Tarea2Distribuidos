@@ -280,6 +280,7 @@ func (dn *DatanodeServer) CompartirArchivoDatanode(stream datanode.DatanodeServi
 		mensaje := in.Content
 
 		if _, err12 := os.Stat("libro/"); os.IsNotExist(err12) {
+			log.Printf("No existe libro")
 			errFolder := os.Mkdir("libro", 0755)
 			if errFolder != nil {
 				//log.Printf(err)
@@ -288,6 +289,7 @@ func (dn *DatanodeServer) CompartirArchivoDatanode(stream datanode.DatanodeServi
 		}
 
 		if _, err12 := os.Stat("libro/" + in.NombreOriginal); os.IsNotExist(err12) {
+			log.Printf("No existe %s", "libro/"+in.NombreOriginal)
 			errFolder := os.Mkdir("libro/"+in.NombreOriginal, 0755)
 			if errFolder != nil {
 				//log.Printf(err)
