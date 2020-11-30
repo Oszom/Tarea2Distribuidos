@@ -436,7 +436,11 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 	//Segunda Propuesta
 
-	mandarAlLog(nuevaPropuesta)
+	errorLog := mandarAlLog(nuevaPropuesta)
+
+	if errorLog != nil {
+		log.Printf("Error al mandar la propuesta actual al node: Mensaje %v",errorLog)
+	}
 
 	return nuevaPropuesta, nil
 
