@@ -166,7 +166,7 @@ func (dn *DatanodeServer) SubirArchivo(stream datanode.DatanodeService_SubirArch
 		return errorConn
 	}
 
-	log.Printf("La propuesta obtenida es: %v \n Acaso hubo un error por timeout?: %v", listaPropuestaValida, errorConn)
+	//log.Printf("La propuesta obtenida es: %v \n Acaso hubo un error por timeout?: %v", listaPropuestaValida, errorConn)
 
 	for i := 0; i < len(listaPropuestaValida); i++ {
 		actualChunk := listaPropuestaValida[i]
@@ -226,7 +226,7 @@ func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_Ver
 			return err
 		}
 
-		log.Printf("El namenode me pregunto si acepto la propuesta con un numero de %d Chunks", in.Chunks)
+		//log.Printf("El namenode me pregunto si acepto la propuesta con un numero de %d Chunks", in.Chunks)
 
 		var stat syscall.Statfs_t
 
@@ -246,7 +246,7 @@ func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_Ver
 		haFallado := eleccion.Pick().(bool)
 
 		if haFallado {
-			log.Printf("[Entra Carlos Pinto a la escena, llena de humo]\nNada hizo pensar al datanode que le ocurriria un fallo en este mismo momento.")
+			log.Printf("[Entra Carlos Pinto a la escena, llena de humo]\nNada hizo pensar al datanode que le ocurriria un error aleatorio en este momento.")
 		}
 
 		//Se envia la respuesta al cliente
@@ -333,7 +333,7 @@ func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerCh
 
 		pathArchivo := "libro/" + in.NombreLibro + "/" + in.NombreLibro + "_parte_" + fmt.Sprintf("%d", in.NumChunk)
 
-		log.Printf("Me pidieron el archivo con el siguiente path:\n%s", pathArchivo)
+		//log.Printf("Me pidieron el archivo con el siguiente path:\n%s", pathArchivo)
 
 		if fileExists(pathArchivo) {
 
@@ -452,7 +452,7 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 func autoApruebo(nChunks int) bool {
 
-	log.Printf("El namenode me pregunto si acepto la propuesta con un numero de %d Chunks", nChunks)
+	//log.Printf("El namenode me pregunto si acepto la propuesta con un numero de %d Chunks", nChunks)
 
 	var stat syscall.Statfs_t
 
@@ -532,7 +532,7 @@ func consultaDatanode(nombreMaquina string, nEsposos int32) bool {
 				log.Fatalf("Error al consultar al datanode sobre la propuesta: %v", err)
 			}
 
-			log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
+			//log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
 
 			//Veo si ocurrio un error random
 			if in.FalloRandom {
@@ -688,7 +688,7 @@ func mandarChunk(chunkActual []byte, maquinaDestino string, NombreChunk string, 
 
 	go func() {
 		for {
-			in, err := stream.Recv()
+			_, err := stream.Recv()
 			if err == io.EOF {
 				close(waitc)
 				return
@@ -697,7 +697,7 @@ func mandarChunk(chunkActual []byte, maquinaDestino string, NombreChunk string, 
 			if err != nil {
 				log.Fatalf("Error al enviar el chunk %s al datanode alojado en %s: %v", NombreChunk, maquinaDestino, err)
 			}
-			log.Printf("El server retorna el siguiente mensaje: %v", in.Message)
+			//log.Printf("El server retorna el siguiente mensaje: %v", in.Message)
 		}
 	}()
 
