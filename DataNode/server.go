@@ -727,7 +727,7 @@ func mandarAlLog(azucar []Propuesta) error {
 		log.Fatalf("no se pudo conectar: %s", err)
 	}
 
-	defer conn.Close()
+	//	defer conn.Close()
 
 	c := namenode.NewNameNodeServiceClient(conn)
 
@@ -741,6 +741,7 @@ func mandarAlLog(azucar []Propuesta) error {
 
 	if err != nil {
 		//Error por timeout
+		conn.Close()
 		return errors.New("Fallo la comunicación con el namenode")
 	}
 
@@ -750,14 +751,14 @@ func mandarAlLog(azucar []Propuesta) error {
 
 	go func() {
 		for {
-			_, err := stream.Recv()
+			in, err := stream.Recv()
 			if err == io.EOF {
 				close(waitc)
 				return
 			}
 
 			if err != nil {
-				log.Fatalf("Error al enviar la propuesta al log del namenode: %v", err)
+				log.Fatalf("Error al enviar la propuesta al log del namenode: %v %v", err, in)
 			}
 
 		}
@@ -774,12 +775,14 @@ func mandarAlLog(azucar []Propuesta) error {
 		}
 
 		if err := stream.Send(&mensaje); err != nil {
+			conn.Close()
 			log.Fatalf("Failed to send a note: %v", err)
 		}
 
 	}
 
 	stream.CloseSend()
+	conn.Close()
 	return nil
 }
 
