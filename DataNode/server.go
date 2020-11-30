@@ -218,7 +218,7 @@ designados en la propuesta generada para repartir los chunks
 func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_VerificarPropuestaServer) error {
 	for {
 
-		in, err := stream.Recv()
+		_, err := stream.Recv()
 		if err == io.EOF {
 			return nil
 		}
