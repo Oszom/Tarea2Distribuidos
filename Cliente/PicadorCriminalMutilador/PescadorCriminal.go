@@ -20,7 +20,7 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 	// Step 2: Grab the num of chars you need
 	nombrecorto := string(a[0 : len(nombreArchivo)-4])
 
-	newFileName := nombrecorto + "_jorge.pdf"
+	newFileName := nombrecorto + ".zip"
 	_, err := os.Create(newFileName)
 
 	if err != nil {
