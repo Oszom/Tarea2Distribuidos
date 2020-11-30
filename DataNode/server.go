@@ -748,8 +748,7 @@ func mandarAlLog(azucar []Propuesta) error {
 
 	go func() {
 		for {
-			in, err := stream.Recv()
-			_ = in
+			_, err := stream.Recv()
 			if err == io.EOF {
 				close(waitc)
 				return

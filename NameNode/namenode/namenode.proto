@@ -24,6 +24,6 @@ message libroEnSistema {
 
 service NameNodeService {
     rpc mandarPropuesta(stream Propuesta) returns (stream Propuesta) {}
-    rpc almacenarPropuesta (stream Propuesta) returns (stream EmptyMessage) {}
+    rpc almacenarPropuesta (stream Propuesta) returns (stream Propuesta) {}
     rpc getListaLibros(stream EmptyMessage) returns (stream libroEnSistema) {}
 }
