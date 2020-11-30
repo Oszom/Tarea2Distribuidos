@@ -710,6 +710,71 @@ func mandarChunk(chunkActual []byte, maquinaDestino string, NombreChunk string, 
 	return true
 }
 
+func mandarAlLog(azucar []Propuesta) error {
+	//Que significa esta funcion?
+
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial("dist57:9000", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("no se pudo conectar: %s", err)
+	}
+
+	defer conn.Close()
+
+	c := namenode.NewNameNodeServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+
+	if cancel != nil {
+		log.Print(cancel)
+	}
+
+	stream, err := c.AlmacenarPropuesta(ctx)
+
+	if err != nil {
+		//Error por timeout
+		return errors.New("Fallo la comunicación con el namenode")
+	}	
+
+	//No lo se, pero me la recomendaron
+
+	waitc := make(chan struct{})
+
+	go func() {
+		for {
+			_, err := stream.Recv()
+			if err == io.EOF {
+				close(waitc)
+				return
+			}
+
+			if err != nil {
+				log.Fatalf("Error al recibir un mensaje: %v", err)
+			}
+
+		}
+	}()
+
+	var mensaje namenode.Propuesta
+
+	for i := 0; i < len(azucar); i++ {
+
+		mensaje = namenode.Propuesta{
+			NumChunk: int32(i),
+			Maquina: azucar[i].Maquina,
+			NombreLibro: azucar[i].NombreLibro,
+		}
+
+		if err := stream.Send(&mensaje); err != nil {
+			log.Fatalf("Failed to send a note: %v", err)
+		}
+
+	}
+
+	stream.CloseSend()
+	return nil
+}
+
 /*
 	fileExists verifica si el archivo definido por filename existe
 	y retorna true si existe o false si no
