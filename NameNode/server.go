@@ -287,6 +287,7 @@ func obtenerListadeLibros() []LibrosMaquinas {
 	file, err := os.Open("log.txt")
 
 	if err != nil {
+		log.Print(err)
 		log.Fatalf("Fallo al abrir el archivo.")
 	}
 
