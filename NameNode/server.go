@@ -491,7 +491,7 @@ func consultaDatanode(nombreMaquina string, nEsposos int) bool {
 				log.Fatalf("Error al recibir un mensaje: %v", err)
 			}
 
-			log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
+			//log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
 
 			//Veo si ocurrio un error random
 			if in.FalloRandom {
