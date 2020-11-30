@@ -15,7 +15,7 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 	// just for fun, let's recombine back the chunked files in a new file
 
 	// Step 1: Convert it to a rune
-	a := []rune(nombreArchivo)
+	//a := []rune(nombreArchivo)
 
 	// Step 2: Grab the num of chars you need
 	//nombrecorto := string(a[0 : len(nombreArchivo)-4])
@@ -84,7 +84,7 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 		// write/save buffer to disk
 		//ioutil.WriteFile(newFileName, chunkBufferBytes, os.ModeAppend)
 
-		n, err := file.Write(chunkBufferBytes)
+		_, err := file.Write(chunkBufferBytes)
 
 		if err != nil {
 			fmt.Println(err)
@@ -109,7 +109,7 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 		currentChunkFileName := nombreArchivo + "_parte_" + strconv.FormatUint(j, 10)
 		os.Remove(currentChunkFileName)
 	}
-	
+
 	// now, we close the newFileName
 	file.Close()
 
