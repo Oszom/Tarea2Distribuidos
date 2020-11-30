@@ -317,6 +317,7 @@ func main() {
 				librillo = strings.TrimSuffix(librillo, "\n")
 				librillo = strings.TrimSuffix(librillo, "\r")
 				librilloInt, _ = strconv.Atoi(librillo)
+				fmt.Println(len(opciones))
 				if librilloInt > 0 || librilloInt < len(opciones) {
 					fmt.Println("Por favor elija un número que esté dentro del rango indicado: ")
 					inputValido = true
