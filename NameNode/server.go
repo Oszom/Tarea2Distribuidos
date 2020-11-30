@@ -62,7 +62,6 @@ func main() {
 	var wg sync.WaitGroup
 
 	log.Printf("El IP del Namenode actual es: %v", getOutboundIP())
-	fmt.Println(obtenerListadeLibros())
 
 	sn := ServerNamenode{}
 
@@ -228,6 +227,49 @@ func (sr *ServerNamenode) GetListaLibros(stream namenode.NameNodeService_GetList
 
 }
 
+//AlmacenarPropuesta is my life
+func (sr *ServerNamenode) AlmacenarPropuesta(stream namenode.NameNodeService_AlmacenarPropuestaServer) error {
+
+	var listaPropuesta []IntentoPropuesta
+	var ElementoPropuesta IntentoPropuesta
+
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Printf("Error al recibir")
+			return err
+		}
+
+		ElementoPropuesta = IntentoPropuesta{
+			Chunk:       in.NumChunk,
+			Maquina:     in.Maquina,
+			NombreLibro: in.NombreLibro,
+		}
+		listaPropuesta = append(listaPropuesta, ElementoPropuesta)
+	}
+
+	sr.BeteerreTres.Lock()
+
+	textoAEscribir := formatearTexto(listaPropuesta)
+	escribirLog("log.txt", textoAEscribir)
+
+	sr.BeteerreTres.Unlock()
+
+	if err := stream.Send(&namenode.Propuesta{
+		NumChunk:    int32(13),
+		Maquina:     "La Marina",
+		NombreLibro: "El dia menos pensado",
+	}); err != nil {
+		log.Printf("Error al enviar")
+		return err
+	}
+
+	return nil
+}
+
 /*
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 				Funciones auxiliares
@@ -248,9 +290,10 @@ func obtenerListadeLibros() []LibrosMaquinas {
 	var texto []string
 	var infoLibros []LibrosMaquinas
 	var libroActual ubicacionesChunks
-	file, err := os.Open("NameNode/log.txt")
+	file, err := os.Open("log.txt")
 
 	if err != nil {
+		log.Print(err)
 		log.Fatalf("Fallo al abrir el archivo.")
 	}
 

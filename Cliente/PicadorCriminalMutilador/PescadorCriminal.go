@@ -15,12 +15,12 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 	// just for fun, let's recombine back the chunked files in a new file
 
 	// Step 1: Convert it to a rune
-	a := []rune(nombreArchivo)
+	//a := []rune(nombreArchivo)
 
 	// Step 2: Grab the num of chars you need
-	nombrecorto := string(a[0 : len(nombreArchivo)-4])
+	//nombrecorto := string(a[0 : len(nombreArchivo)-4])
 
-	newFileName := nombrecorto + ".zip"
+	newFileName := nombreArchivo
 	_, err := os.Create(newFileName)
 
 	if err != nil {
@@ -68,7 +68,7 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 		var chunkSize int64 = chunkInfo.Size()
 		chunkBufferBytes := make([]byte, chunkSize)
 
-		fmt.Println("Appending at position : [", writePosition, "] bytes")
+		//fmt.Println("Appending at position : [", writePosition, "] bytes")
 		writePosition = writePosition + chunkSize
 
 		// read into chunkBufferBytes
@@ -84,7 +84,7 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 		// write/save buffer to disk
 		//ioutil.WriteFile(newFileName, chunkBufferBytes, os.ModeAppend)
 
-		n, err := file.Write(chunkBufferBytes)
+		_, err = file.Write(chunkBufferBytes)
 
 		if err != nil {
 			fmt.Println(err)
@@ -100,9 +100,14 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 
 		chunkBufferBytes = nil // reset or empty our buffer
 
-		fmt.Println("Se han escrito ", n, " bytes")
+		//fmt.Println("Se han escrito ", n, " bytes")
 
-		fmt.Println("Recombinando parte [", j, "] en : ", newFileName)
+		//fmt.Println("Recombinando parte [", j, "] en : ", newFileName)
+	}
+
+	for j := uint64(0); j < cantPartes; j++ {
+		currentChunkFileName := nombreArchivo + "_parte_" + strconv.FormatUint(j, 10)
+		os.Remove(currentChunkFileName)
 	}
 
 	// now, we close the newFileName
@@ -156,7 +161,7 @@ func Cortar(archivo string) []string {
 		// write/save buffer to disk
 		ioutil.WriteFile(fileName, partBuffer, os.ModeAppend)
 
-		fmt.Println("Split to : ", fileName)
+		//fmt.Println("Split to : ", fileName)
 	}
 	return partes
 	// just for fun, let's recombine back the chunked files in a new file
