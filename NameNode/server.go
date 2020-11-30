@@ -284,7 +284,7 @@ func obtenerListadeLibros() []LibrosMaquinas {
 	var texto []string
 	var infoLibros []LibrosMaquinas
 	var libroActual ubicacionesChunks
-	file, err := os.Open("NameNode/log.txt")
+	file, err := os.Open("log.txt")
 
 	if err != nil {
 		log.Fatalf("Fallo al abrir el archivo.")

@@ -74,12 +74,10 @@ func main() {
 			choice = strings.TrimSuffix(choice, "\r")
 			switch choice {
 			case "1":
-				log.Print("elegi 1")
 				isDistributed = true
 				tieneElPabloLaRazon = false
 				break
 			case "2":
-				log.Print("elegi 2")
 				isDistributed = false
 				tieneElPabloLaRazon = false
 				break
@@ -245,6 +243,10 @@ func (dn *DatanodeServer) VerificarPropuesta(stream datanode.DatanodeService_Ver
 			wr.Choice{Item: false, Weight: 9},
 		)
 		haFallado := eleccion.Pick().(bool)
+
+		if haFallado {
+			log.Printf("[Entra Carlos Pinto a la escena, llena de humo]\nNada hizo pensar al datanode que le ocurriria un fallo en este mismo momento.")
+		}
 
 		//Se envia la respuesta al cliente
 		if err := stream.Send(&datanode.IsAlive{
