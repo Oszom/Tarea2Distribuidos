@@ -3,6 +3,7 @@ package main
 import (
 	"Tarea2/DataNode/datanode"
 	"Tarea2/NameNode/namenode"
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
@@ -15,7 +16,6 @@ import (
 	"strings"
 	"sync"
 	"syscall"
-	"bufio"
 	"time"
 
 	wr "github.com/mroth/weightedrand"
@@ -66,7 +66,7 @@ func main() {
 	tieneElPabloLaRazon := true
 
 	if strings.Contains(getHostname(), "dist58") {
-		for tieneElPabloLaRazon{
+		for tieneElPabloLaRazon {
 			decision := bufio.NewReader(os.Stdin)
 			fmt.Printf("¿Con que algoritmo de exclusion quiere que funcione el sistema?\n1) Distribuido\n2) Centralizado \n")
 			choice, _ := decision.ReadString('\n')
@@ -331,7 +331,7 @@ func (dn *DatanodeServer) ObtenerChunk(stream datanode.DatanodeService_ObtenerCh
 
 		pathArchivo := "libro/" + in.NombreLibro + "/" + in.NombreLibro + "_parte_" + fmt.Sprintf("%d", in.NumChunk)
 
-		log.Printf("Me pidieron el archivo con el siguiente path:\n%s",pathArchivo)
+		log.Printf("Me pidieron el archivo con el siguiente path:\n%s", pathArchivo)
 
 		if fileExists(pathArchivo) {
 
@@ -394,6 +394,8 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 	papa2020 := true
 
+	propuestaCompiladas := compilarPropuestasMaquinas(primeraPropuesta)
+
 	for i := 0; i < len(namenodeAprueba); i++ {
 
 		maquinaActual := maquinasDisponibles[i]
@@ -401,37 +403,37 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 		if strings.Contains(maquinaActual, "dist58") {
 
-			sipoApruebo = autoApruebo(int(primeraPropuesta[i].NumChunk))
+			sipoApruebo = autoApruebo(int(propuestaCompiladas[maquinaActual]))
 
 		} else {
 
-			sipoApruebo = consultaDatanode(maquinaActual, primeraPropuesta[i].NumChunk)
+			sipoApruebo = consultaDatanode(maquinaActual, int32(propuestaCompiladas[maquinaActual]))
 
 		}
 
 		namenodeAprueba[maquinaActual] = sipoApruebo
-		if sipoApruebo{
-			maquinasQueSiPueden = append(maquinasQueSiPueden,maquinaActual)
+		if sipoApruebo {
+			maquinasQueSiPueden = append(maquinasQueSiPueden, maquinaActual)
 		}
 		papa2020 = papa2020 && sipoApruebo
 
 	}
 
-	if papa2020{
+	if papa2020 {
 		nuevaPropuesta = primeraPropuesta
 	} else {
 		if len(maquinasQueSiPueden) == 0 {
 			return []Propuesta{}, errors.New("Ninguna de las maquinas puede aceptar la propuesta")
-		} else {
-			for i := 0; i < nChunks; i++ {
-				posMaq := i % len(maquinasQueSiPueden)
-				nuevaPropuesta= append(nuevaPropuesta, Propuesta{
-					NumChunk:       int32(i),
-					Maquina:     maquinasDisponibles[posMaq],
-					NombreLibro: nombreLibro,
-				})
-			}
 		}
+		for i := 0; i < nChunks; i++ {
+			posMaq := i % len(maquinasQueSiPueden)
+			nuevaPropuesta = append(nuevaPropuesta, Propuesta{
+				NumChunk:    int32(i),
+				Maquina:     maquinasDisponibles[posMaq],
+				NombreLibro: nombreLibro,
+			})
+		}
+
 	}
 
 	//Segunda Propuesta
@@ -439,7 +441,7 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 	errorLog := mandarAlLog(nuevaPropuesta)
 
 	if errorLog != nil {
-		log.Printf("Error al mandar la propuesta actual al node: Mensaje %v",errorLog)
+		log.Printf("Error al mandar la propuesta actual al node: Mensaje %v", errorLog)
 	}
 
 	return nuevaPropuesta, nil
@@ -691,7 +693,7 @@ func mandarChunk(chunkActual []byte, maquinaDestino string, NombreChunk string, 
 			}
 
 			if err != nil {
-				log.Fatalf("Error al enviar el chunk %s al datanode alojado en %s: %v",NombreChunk, maquinaDestino, err)
+				log.Fatalf("Error al enviar el chunk %s al datanode alojado en %s: %v", NombreChunk, maquinaDestino, err)
 			}
 			log.Printf("El server retorna el siguiente mensaje: %v", in.Message)
 		}
@@ -740,7 +742,7 @@ func mandarAlLog(azucar []Propuesta) error {
 	if err != nil {
 		//Error por timeout
 		return errors.New("Fallo la comunicación con el namenode")
-	}	
+	}
 
 	//No lo se, pero me la recomendaron
 
@@ -755,7 +757,7 @@ func mandarAlLog(azucar []Propuesta) error {
 			}
 
 			if err != nil {
-				log.Fatalf("Error al enviar la propuesta al log del namenode: %v",err)
+				log.Fatalf("Error al enviar la propuesta al log del namenode: %v", err)
 			}
 
 		}
@@ -766,8 +768,8 @@ func mandarAlLog(azucar []Propuesta) error {
 	for i := 0; i < len(azucar); i++ {
 
 		mensaje = namenode.Propuesta{
-			NumChunk: int32(i),
-			Maquina: azucar[i].Maquina,
+			NumChunk:    int32(i),
+			Maquina:     azucar[i].Maquina,
 			NombreLibro: azucar[i].NombreLibro,
 		}
 
