@@ -105,6 +105,11 @@ func Juntar(nombreArchivo string, cantPartes uint64) {
 		//fmt.Println("Recombinando parte [", j, "] en : ", newFileName)
 	}
 
+	for j := uint64(0); j < cantPartes; j++ {
+		currentChunkFileName := nombreArchivo + "_parte_" + strconv.FormatUint(j, 10)
+		os.Remove(currentChunkFileName)
+	}
+	
 	// now, we close the newFileName
 	file.Close()
 
