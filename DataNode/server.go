@@ -525,7 +525,7 @@ func consultaDatanode(nombreMaquina string, nEsposos int32) bool {
 			}
 
 			if err != nil {
-				log.Fatalf("Error al recibir un mensaje: %v", err)
+				log.Fatalf("Error al consultar al datanode sobre la propuesta: %v", err)
 			}
 
 			log.Printf("El server retorna el siguiente mensaje: %v %v", in.Capacidad, in.FalloRandom)
@@ -635,7 +635,7 @@ func propuestaNamenode(propuesta []namenode.Propuesta) ([]Propuesta, error) {
 			}
 
 			if err != nil {
-				log.Fatalf("Error al recibir un mensaje: %v", err)
+				log.Fatalf("Error al recibir la propuesta desde el namenode: %v", err)
 			}
 
 			listaPropuestaNamenode = append(listaPropuestaNamenode,
@@ -691,7 +691,7 @@ func mandarChunk(chunkActual []byte, maquinaDestino string, NombreChunk string, 
 			}
 
 			if err != nil {
-				log.Fatalf("Error al recibir un mensaje: %v", err)
+				log.Fatalf("Error al enviar el chunk %s al datanode alojado en %s: %v",NombreChunk, maquinaDestino, err)
 			}
 			log.Printf("El server retorna el siguiente mensaje: %v", in.Message)
 		}
@@ -748,14 +748,15 @@ func mandarAlLog(azucar []Propuesta) error {
 
 	go func() {
 		for {
-			_, err := stream.Recv()
+			in, err := stream.Recv()
+			_ = in
 			if err == io.EOF {
 				close(waitc)
 				return
 			}
 
 			if err != nil {
-				log.Fatalf("Error al recibir un mensaje: %v", err)
+				log.Fatalf("Error al enviar la propuesta al log del namenode: %v",err)
 			}
 
 		}
