@@ -438,6 +438,7 @@ func manejoPropuestaDistribuida(nChunks int, nombreLibro string) ([]Propuesta, e
 
 	//Segunda Propuesta
 
+	log.Panicf("La nueva propuesta es: %v", nuevaPropuesta)
 	errorLog := mandarAlLog(nuevaPropuesta)
 
 	if errorLog != nil {
@@ -727,7 +728,7 @@ func mandarAlLog(azucar []Propuesta) error {
 		log.Fatalf("no se pudo conectar: %s", err)
 	}
 
-	//	defer conn.Close()
+	defer conn.Close()
 
 	c := namenode.NewNameNodeServiceClient(conn)
 
@@ -741,7 +742,6 @@ func mandarAlLog(azucar []Propuesta) error {
 
 	if err != nil {
 		//Error por timeout
-		conn.Close()
 		return errors.New("Fallo la comunicación con el namenode")
 	}
 
@@ -766,6 +766,8 @@ func mandarAlLog(azucar []Propuesta) error {
 
 	var mensaje namenode.Propuesta
 
+	log.Printf("LA propuesta acskdjasd es: %v", azucar)
+
 	for i := 0; i < len(azucar); i++ {
 
 		mensaje = namenode.Propuesta{
@@ -775,14 +777,13 @@ func mandarAlLog(azucar []Propuesta) error {
 		}
 
 		if err := stream.Send(&mensaje); err != nil {
-			conn.Close()
+
 			log.Fatalf("Failed to send a note: %v", err)
 		}
 
 	}
 
 	stream.CloseSend()
-	conn.Close()
 	return nil
 }
 
