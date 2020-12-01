@@ -309,9 +309,10 @@ func main() {
 		choice, _ := decision.ReadString('\n')
 		choice = strings.TrimSuffix(choice, "\n")
 		choice = strings.TrimSuffix(choice, "\r")
+		var comienzoSubida time.Time
 		switch choice {
 		case "1":
-			comienzoSubida := time.Now()
+			comienzoSubida = time.Now()
 			subirLibro()
 			//	timeTrackSubida(comienzoSubida)
 		case "2":
@@ -340,7 +341,7 @@ func main() {
 			libroElegido := lista[librilloInt-1]
 			finsubida := time.Since(comienzoSubida)
 			descargarLibro(libroElegido)
-			fmt.Pintln("Tiempo transcurrido en segundos es: " + finsubida.Seconds())
+			fmt.Println("Tiempo transcurrido en segundos es: " + fmt.Sprintf("%f", finsubida.Seconds()))
 			//timeTrackBajada(comienzoBajada, libroElegido.nombreLibro)
 		default:
 			fmt.Printf("Por favor, ingrese una de las opciones indicadas (1 ó 2)\n")
