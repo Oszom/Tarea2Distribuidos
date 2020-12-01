@@ -285,13 +285,13 @@ func parsearListado(listado []LibrosMaquinas) []string {
 }
 
 func timeTrackSubida(start time.Time) {
-    elapsed := time.Since(start)
-    log.Printf("Subir el libro tomo %s", elapsed)
+	elapsed := time.Since(start)
+	log.Printf("Subir el libro tomo %s", elapsed)
 }
 
 func timeTrackBajada(start time.Time, libro string) {
-    elapsed := time.Since(start)
-    log.Printf("Descargar el libro %s tomo %s", libro, elapsed)
+	elapsed := time.Since(start)
+	log.Printf("Descargar el libro %s tomo %s", libro, elapsed)
 }
 
 /*
@@ -313,7 +313,7 @@ func main() {
 		case "1":
 			comienzoSubida := time.Now()
 			subirLibro()
-			timeTrackSubida(comienzoSubida)
+			//	timeTrackSubida(comienzoSubida)
 		case "2":
 			lista := getListaLibros()
 			opciones := parsearListado(lista)
@@ -338,9 +338,10 @@ func main() {
 				}
 			}
 			libroElegido := lista[librilloInt-1]
-			comienzoBajada := time.Now()
+			finsubida := time.Since(comienzoSubida)
 			descargarLibro(libroElegido)
-			timeTrackBajada(comienzoBajada, libroElegido.nombreLibro)
+			fmt.Pintln("Tiempo transcurrido en segundos es: " + finsubida.Seconds())
+			//timeTrackBajada(comienzoBajada, libroElegido.nombreLibro)
 		default:
 			fmt.Printf("Por favor, ingrese una de las opciones indicadas (1 ó 2)\n")
 
