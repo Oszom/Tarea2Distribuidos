@@ -314,8 +314,7 @@ func main() {
 		case "1":
 			comienzoSubida = time.Now()
 			subirLibro()
-			fmt.Println("Tiempo transcurrido en segundos es: " + fmt.Sprintf("%f", time.Since(comienzoSubida).Seconds()))
-			//	timeTrackSubida(comienzoSubida)
+			timeTrackSubida(comienzoSubida)
 		case "2":
 			lista := getListaLibros()
 			opciones := parsearListado(lista)
@@ -340,10 +339,9 @@ func main() {
 				}
 			}
 			libroElegido := lista[librilloInt-1]
-			finsubida := time.Since(comienzoSubida)
+			comienzoBajada := time.Now()
 			descargarLibro(libroElegido)
-
-			//timeTrackBajada(comienzoBajada, libroElegido.nombreLibro)
+			timeTrackBajada(comienzoBajada, libroElegido.nombreLibro)
 		default:
 			fmt.Printf("Por favor, ingrese una de las opciones indicadas (1 ó 2)\n")
 
