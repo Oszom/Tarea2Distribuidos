@@ -38,8 +38,12 @@ message Propuesta {
 message EmptyMessage{}
 
 service DatanodeService{
+    // Recibe un Mensaje por chunk y retorna un mensaje
     rpc SubirArchivo(stream Chunk) returns (stream UploadStatus) {}
+    // Recibe un solo mensaje y retorna solo un mensaje
     rpc VerificarPropuesta(stream CantidadChunks) returns (stream isAlive) {}
+    // Recibe un solo mensaje y retorna solo uno
     rpc CompartirArchivoDatanode(stream Chunk) returns (stream UploadStatus) {}
+    //Envia un mensaje y retorna un mensaje
     rpc ObtenerChunk(stream Propuesta) returns (stream Chunk) {}
 }

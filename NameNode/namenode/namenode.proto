@@ -23,7 +23,11 @@ message libroEnSistema {
 }
 
 service NameNodeService {
+
+    //Recibe un mensaje por mensaje por chunk y retorna un mensaje por chunk
     rpc mandarPropuesta(stream Propuesta) returns (stream Propuesta) {}
+    //Recibe un mensaje por mensaje por chunk y retorna solo un mensaje
     rpc almacenarPropuesta (stream Propuesta) returns (stream Propuesta) {}
+    //Recibe un mensaje y retorna un mensaje por libro almacenado en el sistema
     rpc getListaLibros(stream EmptyMessage) returns (stream libroEnSistema) {}
 }

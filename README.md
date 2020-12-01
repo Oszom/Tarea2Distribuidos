@@ -25,3 +25,4 @@
 - Cuando corre el Namenode se borra el archivo log.txt automáticamente.
 - Favor de ingresar solo números al momento de seleccionar un libro a descargar.
 - Cuando corres make runDatanode se borran los chunks guardados en ese datanode.
+- 
