@@ -35,3 +35,5 @@ nombre_libro_parte_2 hostname_maquina
 
 nombre_libro_parte_n hostname_maquina
 ```
+- Para que los chunks tengan un tamaño de 250 [kB] incluida la metadata, el programa realiza cortes de 246[kB]
+- El informe se encuentra presente en una de las maquinas.
