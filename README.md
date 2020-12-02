@@ -1,8 +1,5 @@
 # Tarea2Distribuidos
 
-><h1> El nombre de la funcion/variable debe partir con una letra mayuscula para ser considerado como exportado</h1>
-><h1> Al definir parametros en una función, estos se definen como (nombre tipo)</h1>
-
 # Ubicacion de los nodos
 
 * _DataNode 1_ -> `dist58`
@@ -25,4 +22,16 @@
 - Cuando corre el Namenode se borra el archivo log.txt automáticamente.
 - Favor de ingresar solo números al momento de seleccionar un libro a descargar.
 - Cuando corres make runDatanode se borran los chunks guardados en ese datanode.
-- 
+- Los archivos para descargar se encuentran en la carpeta Ejemplos, mientras que los archivos descargados se encuentran en la carpeta Librosdescargados. El log se encuentra en log.txt y los chunks se encuentran en la carpeta libros
+- El log presenta la siguiente estructura:
+```
+nombre_libro Cantidad_partes n
+
+nombre_libro_parte_1 hostname_maquina
+
+nombre_libro_parte_2 hostname_maquina
+
+...
+
+nombre_libro_parte_n hostname_maquina
+```

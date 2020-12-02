@@ -57,17 +57,33 @@ func servirServidor(wg *sync.WaitGroup, namenodeServer *ServerNamenode, puerto s
 	}
 }
 
+//Codigo obtenido para
+func getHostname() string {
+
+	name, err := os.Hostname()
+	if err != nil {
+		panic(err)
+	}
+	return name
+}
+
 func main() {
 
-	var wg sync.WaitGroup
+	if !strings.Contains(getHostname(), "dist57") {
 
-	log.Printf("El IP del Namenode actual es: %v", getOutboundIP())
+		var wg sync.WaitGroup
 
-	sn := ServerNamenode{}
+		log.Printf("El IP del Namenode actual es: %v", getOutboundIP())
 
-	wg.Add(1)
-	go servirServidor(&wg, &sn, "9000")
-	wg.Wait()
+		sn := ServerNamenode{}
+
+		wg.Add(1)
+		go servirServidor(&wg, &sn, "9000")
+		wg.Wait()
+
+	} else {
+		log.Print("Corre el namenode en la maquina dist57")
+	}
 
 }
 
