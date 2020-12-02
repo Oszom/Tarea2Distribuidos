@@ -69,7 +69,7 @@ func getHostname() string {
 
 func main() {
 
-	if !strings.Contains(getHostname(), "dist57") {
+	if strings.Contains(getHostname(), "dist57") {
 
 		var wg sync.WaitGroup
 
