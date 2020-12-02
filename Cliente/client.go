@@ -285,13 +285,13 @@ func parsearListado(listado []LibrosMaquinas) []string {
 }
 
 func timeTrackSubida(start time.Time) {
-    elapsed := time.Since(start)
-    log.Printf("Subir el libro tomo %s", elapsed)
+	elapsed := time.Since(start)
+	log.Printf("Subir el libro tomo %s", elapsed)
 }
 
 func timeTrackBajada(start time.Time, libro string) {
-    elapsed := time.Since(start)
-    log.Printf("Descargar el libro %s tomo %s", libro, elapsed)
+	elapsed := time.Since(start)
+	log.Printf("Descargar el libro %s tomo %s", libro, elapsed)
 }
 
 /*
@@ -309,9 +309,10 @@ func main() {
 		choice, _ := decision.ReadString('\n')
 		choice = strings.TrimSuffix(choice, "\n")
 		choice = strings.TrimSuffix(choice, "\r")
+		var comienzoSubida time.Time
 		switch choice {
 		case "1":
-			comienzoSubida := time.Now()
+			comienzoSubida = time.Now()
 			subirLibro()
 			timeTrackSubida(comienzoSubida)
 		case "2":
